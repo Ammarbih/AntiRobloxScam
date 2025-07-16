@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Scam Detectie Centrum</title>
+    <title>Roblox Scam Detection Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -25,7 +25,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            background: url('Showcase_Filmstrip_1920x1080.webp') no-repeat center center fixed;
+            background-size: cover;
             color: var(--text-dark);
             line-height: 1.6;
             overflow-x: hidden;
@@ -117,7 +118,7 @@
         .hero {
             text-align: center;
             padding: 80px 20px;
-            background: url('https://via.placeholder.com/1500x500/A0DAFF/FFFFFF?text=Roblox+Scam+Detectie+Achtergrond') no-repeat center center/cover; /* Placeholder Roblox-achtige achtergrond */
+            background: url('rolbox.webp') no-repeat center center/cover; /* Re-added Showcase_Filmstrip as background */
             color: white;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             position: relative;
@@ -307,16 +308,42 @@
                 font-size: 1.5em;
             }
         }
+
+        /* Scroll-to-top button */
+        .scroll-arrow {
+            position: fixed;
+            left: 20px;
+            font-size: 3em; /* Slightly larger for single arrow */
+            color: var(--roblox-blue); /* Default to blue for the single arrow */
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.7;
+            bottom: 20px; /* Adjust single arrow position */
+            animation: bounce 1.5s infinite;
+        }
+
+        .scroll-arrow:hover {
+            transform: translateY(-5px); /* Changed to translateY for bounce */
+            opacity: 1;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
     </style>
 </head>
 <body>
     <header>
         <div class="container header-content">
-            <div class="logo">Roblox Scam Detectie</div>
+            <div class="logo">Roblox Scam Detection</div>
             <nav>
                 <ul>
-                    <li><a href="#how-it-works">Hoe het werkt</a></li>
-                    <li><a href="#features">Functies</a></li>
+                    <li><a href="#how-it-works">How it works</a></li>
+                    <li><a href="#features">Features</a></li>
                     <li><a href="#">Login</a></li>
                 </ul>
             </nav>
@@ -326,33 +353,36 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1>Bescherm Jezelf Tegen Roblox Scams!</h1>
-                <p>Meld, bekijk en bestrijd online oplichting op Roblox. Samen maken we Roblox veiliger voor iedereen.</p>
+                <h1>Report Roblox Scams & Earn Robux Giftcards!</h1>
+                <p>Report a Roblox scam. Every verified roblox scam earns you Robux! Staying scam-free for 3 months earns you a giftcard. Let's make Roblox super safe and fun together!</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">Meld een Scam</a>
-                    <a href="#" class="btn btn-secondary">Bekijk Scammerlijst</a>
+                    <a href="#" class="btn btn-primary">Report a Scam</a>
+                    <a href="#" class="btn btn-secondary">Get Started</a>
                 </div>
             </div>
         </section>
 
+        <div class="scroll-arrow" id="scrollToHowItWorks">⬇️</div>
+
         <section id="how-it-works" class="section section-light">
             <div class="container">
-                <h2>Hoe werkt het?</h2>
+                <h2>Did You Get Scammmed In a Roblox Game?</h2>
+                <p class="sub-heading-info" style="font-family: 'Luckiest Guy', cursive; font-size: 1.8em; margin-top: -30px; margin-bottom: 40px; color: var(--roblox-blue); text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Going 3 months without a scam submission also earns you a giftcard!!</p>
                 <div class="grid-3-cols">
                     <div class="grid-item">
                         <div class="icon">📝</div>
-                        <h3>1. Meld een Scam</h3>
-                        <p>Vul ons eenvoudige formulier in met de details van de scam en voeg bewijsmateriaal toe.</p>
+                        <h3>1. Report a Scam</h3>
+                        <p>Fill out our simple form with the scam details and attach evidence.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon">✅</div>
-                        <h3>2. Wij Verifiëren</h3>
-                        <p>Ons team van experts controleert zorgvuldig elke melding. Bij goedkeuring belonen we je!</p>
+                        <h3>2. We Verify</h3>
+                        <p>Our team of experts carefully checks each report and the details of the scam.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon">🔍</div>
-                        <h3>3. Bescherm Anderen</h3>
-                        <p>De scammer wordt toegevoegd aan onze lijst, zodat andere spelers gewaarschuwd zijn.</p>
+                        <h3>3. Enjoy Your Robux!</h3>
+                        <p>Once we verify the scam, you will receive a Robux giftcard! and the scammer will be added to our list and be flagged!</p>
                     </div>
                 </div>
             </div>
@@ -360,27 +390,32 @@
 
         <section id="features" class="section section-dark">
             <div class="container">
-                <h2>Wat wij bieden</h2>
+                <h2>What we offer</h2>
                 <div class="grid-3-cols">
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🛡️</div>
-                        <h3>Veiliger Roblox</h3>
-                        <p>Draag bij aan een veiligere omgeving voor alle Roblox-spelers.</p>
+                        <h3>Safer Roblox</h3>
+                        <p>Contribute to a safer environment for all Roblox players.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🎁</div>
-                        <h3>Word Beloon</h3>
-                        <p>Verdien beloningen voor waardevolle en geverifieerde meldingen.</p>
+                        <h3>Get Rewarded</h3>
+                        <p>Earn rewards for valuable and verified reports.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">📊</div>
-                        <h3>Transparante Lijst</h3>
-                        <p>Toegang tot een actuele lijst van bekende scammers.</p>
+                        <h3>Transparent List</h3>
+                        <p>Access to an up-to-date list of known scammers.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🚫</div>
-                        <h3>Anonieme Meldingen</h3>
-                        <p>Meld scams anoniem om je privacy te beschermen.</p>
+                        <h3>Anonymous Reporting</h3>
+                        <p>Report scams anonymously to protect your privacy.</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon" style="color: var(--roblox-green);">🏆</div>
+                        <h3>Stay Scam-Free, Get Robux!</h3>
+                        <p>Haven't been scammed in 3 months? We'll reward your safety with a special gift card too!</p>
                     </div>
                 </div>
             </div>
@@ -389,13 +424,21 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 Roblox Scam Detectie Centrum. Alle rechten voorbehouden.</p>
+            <p>&copy; 2024 Roblox Scam Detection Center. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#">Privacybeleid</a>
-                <a href="#">Gebruiksvoorwaarden</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
                 <a href="#">Contact</a>
             </div>
         </div>
     </footer>
+
+    <script>
+        document.getElementById('scrollToHowItWorks').addEventListener('click', function() {
+            document.getElementById('how-it-works').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
 </html> 
