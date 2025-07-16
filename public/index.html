@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Scam Detectie Centrum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --roblox-blue: #0077FF;
+            --roblox-purple: #8B5CF6;
+            --roblox-green: #22C55E;
+            --roblox-red: #EF4444;
+            --text-dark: #333333;
+            --text-light: #f9fafb;
+            --bg-light: #f9fafb;
+            --bg-gradient-start: #DBEAFE; /* Light blue */
+            --bg-gradient-end: #EDE9FE; /* Light purple */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            /* justify-content: space-between; */ /* Dit wordt nu beheerd door auto-marges */
+            align-items: center;
+        }
+
+        /* Zorgt ervoor dat de auth-controls naar rechts verschuift */
+        #auth-controls {
+            margin-left: auto; /* Duwt dit element naar rechts, voorbij de nav */
+            margin-right: -100px; /* Schuift het verder naar rechts, bijna tegen de rand */
+            position: relative; /* Voor absolute positionering van dropdown */
+        }
+
+        .logo {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2.5em;
+            color: var(--roblox-blue);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            /* margin-right: auto; */ /* Niet nodig, nav.margin-left: auto doet het werk */
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav {
+            margin-left: auto; /* Duwt de navigatie en auth-controls naar rechts */
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--roblox-blue);
+        }
+
+        /* Nieuwe stijlen voor ingelogde status */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer; /* Zorgt ervoor dat het klikbaar lijkt */
+            padding: 5px 10px; /* Een beetje padding voor een groter klikgebied */
+            border-radius: 20px; /* Afgeronde hoeken voor het klikgebied */
+            transition: background-color 0.3s ease;
+        }
+
+        .user-info:hover {
+            background-color: rgba(0,0,0,0.05); /* Lichte achtergrond bij hover */
+        }
+
+        /* Stijlen voor de dropdown */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 5px); /* Plaats direct onder de user-info/auth-controls */
+            right: 0; /* Lijn uit met de rechterkant van de parent */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            overflow: hidden;
+            min-width: 160px;
+            z-index: 1000;
+            display: none; /* Standaard verborgen */
+            flex-direction: column;
+            padding: 10px 0;
+        }
+
+        .dropdown-menu.show {
+            display: flex; /* Toon de dropdown */
+        }
+
+        .dropdown-menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: block;
+            white-space: nowrap; /* Voorkom dat de tekst afbreekt */
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-gradient-start);
+            color: var(--roblox-blue);
+        }
+
+        .dropdown-menu .divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 5px 0;
+        }
+
+        .dropdown-menu .logout-option {
+            color: var(--roblox-red);
+            font-weight: bold;
+        }
+
+        .dropdown-menu .logout-option:hover {
+            background-color: #FEE2E2; /* Lichte rode achtergrond */
+            color: var(--roblox-red);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--roblox-blue);
+        }
+
+        .user-display-name {
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .logout-btn {
+            background-color: var(--roblox-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #CC3333;
+        }
+
+        /* Verborgen staat */
+        .hidden {
+            display: none !important;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background-color: var(--roblox-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056CC;
+        }
+
+        .btn-secondary {
+            background-color: var(--roblox-purple);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #6D28D9;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: url('https://via.placeholder.com/1500x500/A0DAFF/FFFFFF?text=Roblox+Scam+Detectie+Achtergrond') no-repeat center center/cover; /* Placeholder Roblox-achtige achtergrond */
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.4); /* Overlay for readability */
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.2s;
+        }
+
+        .hero-buttons .btn {
+            margin: 0 10px;
+            animation: fadeIn 1s ease-out 0.4s;
+        }
+
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .section-light {
+            background-color: var(--bg-light);
+        }
+
+        .section-dark {
+            background-color: var(--roblox-blue);
+            color: var(--text-light);
+        }
+
+        .section h2 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3em;
+            margin-bottom: 50px;
+            color: var(--roblox-blue);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .section-dark h2 {
+            color: white;
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .grid-item {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .grid-item .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            color: var(--roblox-green);
+        }
+
+        .grid-item h3 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: var(--roblox-blue);
+        }
+
+        .grid-item p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        footer {
+            background-color: var(--roblox-blue);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        footer .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: text-decoration 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                margin-top: 15px;
+            }
+            nav ul li {
+                margin: 5px 0;
+            }
+            .hero h1 {
+                font-size: 3em;
+            }
+            .hero p {
+                font-size: 1.2em;
+            }
+            .hero-buttons {
+                flex-direction: column;
+            }
+            .hero-buttons .btn {
+                width: 80%;
+                margin: 10px auto;
+            }
+            .section h2 {
+                font-size: 2.5em;
+            }
+            .grid-item .icon {
+                font-size: 3em;
+            }
+            .grid-item h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="/index.html" class="logo">Roblox Scam DC</a>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Melden</a></li>
+                    <li><a href="#">Lijsten</a></li>
+                    <li><a href="#">Over Ons</a></li>
+                </ul>
+            </nav>
+            <div id="auth-controls">
+                <a href="login.html" class="btn btn-primary" id="login-btn">Login</a>
+                <div class="user-info hidden" id="user-profile-info">
+                    <img src="" alt="Avatar" class="user-avatar" id="user-avatar">
+                    <span class="user-display-name" id="user-display-name"></span>
+                    <div class="dropdown-menu" id="user-dropdown-menu">
+                        <a href="/my_account.html">Mijn Account</a>
+                        <div class="divider"></div>
+                        <a href="#" class="logout-option" id="logout-btn">Uitloggen</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Bescherm Jezelf Tegen Roblox Scams!</h1>
+                <p>Meld, bekijk en bestrijd online oplichting op Roblox. Samen maken we Roblox veiliger voor iedereen.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">Meld een Scam</a>
+                    <a href="#" class="btn btn-secondary">Bekijk Scammerlijst</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="section section-light">
+            <div class="container">
+                <h2>Hoe werkt het?</h2>
+                <div class="grid-3-cols">
+                    <div class="grid-item">
+                        <div class="icon">📝</div>
+                        <h3>1. Meld een Scam</h3>
+                        <p>Vul ons eenvoudige formulier in met de details van de scam en voeg bewijsmateriaal toe.</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon">✅</div>
+                        <h3>2. Wij Verifiëren</h3>
+                        <p>Ons team van experts controleert zorgvuldig elke melding. Bij goedkeuring belonen we je!</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon">🔍</div>
+                        <h3>3. Bescherm Anderen</h3>
+                        <p>De scammer wordt toegevoegd aan onze lijst, zodat andere spelers gewaarschuwd zijn.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section section-dark">
+            <div class="container">
+                <h2>Wat wij bieden</h2>
+                <div class="grid-3-cols">
+                    <div class="grid-item">
+                        <div class="icon" style="color: var(--roblox-green);">🛡️</div>
+                        <h3>Veiliger Roblox</h3>
+                        <p>Draag bij aan een veiligere omgeving voor alle Roblox-spelers.</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon" style="color: var(--roblox-green);">🎁</div>
+                        <h3>Word Beloon</h3>
+                        <p>Verdien beloningen voor waardevolle en geverifieerde meldingen.</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon" style="color: var(--roblox-green);">📊</div>
+                        <h3>Transparante Lijst</h3>
+                        <p>Toegang tot een actuele lijst van bekende scammers.</p>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon" style="color: var(--roblox-green);">🚫</div>
+                        <h3>Anonieme Meldingen</h3>
+                        <p>Meld scams anoniem om je privacy te beschermen.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Roblox Scam Detectie Centrum. Alle rechten voorbehouden.</p>
+            <div class="footer-links">
+                <a href="#">Privacybeleid</a>
+                <a href="#">Gebruiksvoorwaarden</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+
+                const loginBtn = document.getElementById('login-btn');
+                const userProfileInfo = document.getElementById('user-profile-info');
+                const userAvatar = document.getElementById('user-avatar');
+                const userDisplayName = document.getElementById('user-display-name');
+                const userDropdownMenu = document.getElementById('user-dropdown-menu');
+                const logoutBtn = document.getElementById('logout-btn');
+
+
+                if (data.loggedIn) {
+                    // Als ingelogd
+                    if (data.user.avatar) {
+                        userAvatar.src = data.user.avatar;
+                    } else {
+                        // Gebruik een standaard avatar als er geen is
+                        userAvatar.src = 'https://via.placeholder.com/40/0077FF/FFFFFF?text=R'; // Een standaard avatar
+                    }
+                    userDisplayName.textContent = data.user.displayName || data.user.email || 'Gebruiker';
+
+                    // Toon de user info en verberg de login knop
+                    loginBtn.classList.add('hidden');
+                    userProfileInfo.classList.remove('hidden');
+
+                    // Toggle de dropdown bij het klikken op user-info
+                    userProfileInfo.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Voorkom dat de click bubbelt naar document
+                        userDropdownMenu.classList.toggle('show');
+                    });
+
+                    // Sluit de dropdown als er ergens anders geklikt wordt
+                    document.addEventListener('click', (event) => {
+                        if (!userProfileInfo.contains(event.target) && userDropdownMenu.classList.contains('show')) {
+                            userDropdownMenu.classList.remove('show');
+                        }
+                    });
+
+                    // Uitloggen functionaliteit voor de knop in de dropdown
+                    logoutBtn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        await fetch('/auth/logout');
+                        window.location.reload(); // Herlaad de pagina om uitgelogde staat te tonen
+                    });
+
+                } else {
+                    // Als niet ingelogd
+                    loginBtn.classList.remove('hidden');
+                    userProfileInfo.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Fout bij controleren inlogstatus:', error);
+                // Val terug naar standaard niet-ingelogde staat bij fout
+                document.getElementById('login-btn').classList.remove('hidden');
+                document.getElementById('user-profile-info').classList.add('hidden');
+            }
+        }
+
+        // Roep de functie aan bij het laden van de pagina
+        checkLoginStatus();
+    </script>
+</body>
+</html> 
