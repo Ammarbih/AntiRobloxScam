@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Roblox Scam Detectie Centrum</title>
+    <title>Login - Roblox Scam Detection Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -102,15 +102,21 @@
 </head>
 <body>
     <div class="login-container">
-        <h1>Welkom Terug!</h1>
-        <p>Log in om scams te melden en de nieuwste scammerlijsten te bekijken.</p>
+        <h1>Welcome Back!</h1>
+        <p>Log in to report scams and view the latest scammer lists.</p>
         <button class="google-btn" onclick="window.location.href='http://localhost:5000/auth/google'">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/512px-Google_%22G%22_logo.svg.png" alt="Google Logo">
-            Inloggen met Google
+            Sign in with Google
         </button>
         <p style="margin-top: 25px; font-size: 0.9em; color: #777;">
-            Door in te loggen ga je akkoord met onze <a href="#" style="color: var(--roblox-blue); text-decoration: none;">Gebruiksvoorwaarden</a> en <a href="#" style="color: var(--roblox-blue); text-decoration: none;">Privacybeleid</a>.
+            By logging in, you agree to our <a href="#" style="color: var(--roblox-blue); text-decoration: none;">Terms of Use</a> and <a href="#" style="color: var(--roblox-blue); text-decoration: none;">Privacy Policy</a>.
         </p>
     </div>
+
+    <script>
+        function handleGoogleLogin() {
+            window.location.href = '/auth/google';
+        }
+    </script>
 </body>
 </html> 

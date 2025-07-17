@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Scam Detectie Centrum</title>
+    <title>Roblox Scam Detection Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -48,15 +48,15 @@
 
         .header-content {
             display: flex;
-            /* justify-content: space-between; */ /* Dit wordt nu beheerd door auto-marges */
+            /* justify-content: space-between; */ /* This is now managed by auto-margins */
             align-items: center;
         }
 
-        /* Zorgt ervoor dat de auth-controls naar rechts verschuift */
+        /* Ensures auth-controls shift to the right */
         #auth-controls {
-            margin-left: auto; /* Duwt dit element naar rechts, voorbij de nav */
-            margin-right: -100px; /* Schuift het verder naar rechts, bijna tegen de rand */
-            position: relative; /* Voor absolute positionering van dropdown */
+            margin-left: auto; /* Pushes this element to the right, past the nav */
+            margin-right: -100px; /* Shifts it further to the right, almost to the edge */
+            position: relative; /* For absolute positioning of dropdown */
         }
 
         .logo {
@@ -65,7 +65,7 @@
             color: var(--roblox-blue);
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
             text-transform: uppercase;
-            /* margin-right: auto; */ /* Niet nodig, nav.margin-left: auto doet het werk */
+            /* margin-right: auto; */ /* Not needed, nav.margin-left: auto does the work */
         }
 
         nav ul {
@@ -76,7 +76,7 @@
         }
 
         nav {
-            margin-left: auto; /* Duwt de navigatie en auth-controls naar rechts */
+            margin-left: auto; /* Pushes navigation and auth-controls to the right */
         }
 
         nav ul li {
@@ -94,39 +94,39 @@
             color: var(--roblox-blue);
         }
 
-        /* Nieuwe stijlen voor ingelogde status */
+        /* New styles for logged-in status */
         .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer; /* Zorgt ervoor dat het klikbaar lijkt */
-            padding: 5px 10px; /* Een beetje padding voor een groter klikgebied */
-            border-radius: 20px; /* Afgeronde hoeken voor het klikgebied */
+            cursor: pointer; /* Makes it look clickable */
+            padding: 5px 10px; /* A bit of padding for a larger click area */
+            border-radius: 20px; /* Rounded corners for the click area */
             transition: background-color 0.3s ease;
         }
 
         .user-info:hover {
-            background-color: rgba(0,0,0,0.05); /* Lichte achtergrond bij hover */
+            background-color: rgba(0,0,0,0.05); /* Light background on hover */
         }
 
-        /* Stijlen voor de dropdown */
+        /* Styles for the dropdown */
         .dropdown-menu {
             position: absolute;
-            top: calc(100% + 5px); /* Plaats direct onder de user-info/auth-controls */
-            right: 0; /* Lijn uit met de rechterkant van de parent */
+            top: calc(100% + 5px); /* Place directly under user-info/auth-controls */
+            right: 0; /* Align with the right side of the parent */
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             overflow: hidden;
             min-width: 160px;
             z-index: 1000;
-            display: none; /* Standaard verborgen */
+            display: none; /* Hidden by default */
             flex-direction: column;
             padding: 10px 0;
         }
 
         .dropdown-menu.show {
-            display: flex; /* Toon de dropdown */
+            display: flex; /* Show the dropdown */
         }
 
         .dropdown-menu a {
@@ -134,7 +134,7 @@
             text-decoration: none;
             color: var(--text-dark);
             display: block;
-            white-space: nowrap; /* Voorkom dat de tekst afbreekt */
+            white-space: nowrap; /* Prevent text from wrapping */
         }
 
         .dropdown-menu a:hover {
@@ -154,7 +154,7 @@
         }
 
         .dropdown-menu .logout-option:hover {
-            background-color: #FEE2E2; /* Lichte rode achtergrond */
+            background-color: #FEE2E2; /* Light red background */
             color: var(--roblox-red);
         }
 
@@ -185,7 +185,7 @@
             background-color: #CC3333;
         }
 
-        /* Verborgen staat */
+        /* Hidden state */
         .hidden {
             display: none !important;
         }
@@ -225,7 +225,8 @@
         .hero {
             text-align: center;
             padding: 80px 20px;
-            background: url('https://via.placeholder.com/1500x500/A0DAFF/FFFFFF?text=Roblox+Scam+Detectie+Achtergrond') no-repeat center center/cover; /* Placeholder Roblox-achtige achtergrond */
+            background: url('/pictures/Main1.jpg') no-repeat center center/cover; /* Gebruik de nieuwe afbeelding als achtergrond */
+            background-attachment: fixed; /* Nieuw: Zorgt voor het parallax effect */
             color: white;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             position: relative;
@@ -239,7 +240,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.4); /* Overlay for readability */
+            background-color: rgba(0,0,0,0.55); /* Donkerder gemaakt (was 0.4) */
             z-index: -1;
         }
 
@@ -424,9 +425,9 @@
             <nav>
                 <ul>
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Melden</a></li>
-                    <li><a href="#">Lijsten</a></li>
-                    <li><a href="#">Over Ons</a></li>
+                    <li><a href="#">Report</a></li>
+                    <li><a href="#">Lists</a></li>
+                    <li><a href="#">About Us</a></li>
                 </ul>
             </nav>
             <div id="auth-controls">
@@ -435,9 +436,9 @@
                     <img src="" alt="Avatar" class="user-avatar" id="user-avatar">
                     <span class="user-display-name" id="user-display-name"></span>
                     <div class="dropdown-menu" id="user-dropdown-menu">
-                        <a href="/my_account.html">Mijn Account</a>
+                        <a href="/my_account.html">My Account</a>
                         <div class="divider"></div>
-                        <a href="#" class="logout-option" id="logout-btn">Uitloggen</a>
+                        <a href="#" class="logout-option" id="logout-btn">Logout</a>
                     </div>
                 </div>
             </div>
@@ -447,33 +448,34 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1>Bescherm Jezelf Tegen Roblox Scams!</h1>
-                <p>Meld, bekijk en bestrijd online oplichting op Roblox. Samen maken we Roblox veiliger voor iedereen.</p>
+                <h1>Protect Yourself Against Roblox Scams!</h1>
+                <p>Report, view, and combat online scams on Roblox. Together, we make Roblox safer for everyone.</p>
+                <!-- De afbeelding is nu de achtergrond, dus de <img> tag is niet meer nodig -->
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">Meld een Scam</a>
-                    <a href="#" class="btn btn-secondary">Bekijk Scammerlijst</a>
+                    <a href="#" class="btn btn-primary">Report a Scam</a>
+                    <a href="#" class="btn btn-secondary">View Scammer List</a>
                 </div>
             </div>
         </section>
 
         <section id="how-it-works" class="section section-light">
             <div class="container">
-                <h2>Hoe werkt het?</h2>
+                <h2>How it Works</h2>
                 <div class="grid-3-cols">
                     <div class="grid-item">
                         <div class="icon">📝</div>
-                        <h3>1. Meld een Scam</h3>
-                        <p>Vul ons eenvoudige formulier in met de details van de scam en voeg bewijsmateriaal toe.</p>
+                        <h3>1. Report a Scam</h3>
+                        <p>Fill out our simple form with the details of the scam and attach evidence.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon">✅</div>
-                        <h3>2. Wij Verifiëren</h3>
-                        <p>Ons team van experts controleert zorgvuldig elke melding. Bij goedkeuring belonen we je!</p>
+                        <h3>2. We Verify</h3>
+                        <p>Our team of experts carefully checks each report. Upon approval, we'll reward you!</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon">🔍</div>
-                        <h3>3. Bescherm Anderen</h3>
-                        <p>De scammer wordt toegevoegd aan onze lijst, zodat andere spelers gewaarschuwd zijn.</p>
+                        <h3>3. Protect Others</h3>
+                        <p>The scammer is added to our list, so other players are warned.</p>
                     </div>
                 </div>
             </div>
@@ -481,27 +483,27 @@
 
         <section id="features" class="section section-dark">
             <div class="container">
-                <h2>Wat wij bieden</h2>
+                <h2>What We Offer</h2>
                 <div class="grid-3-cols">
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🛡️</div>
-                        <h3>Veiliger Roblox</h3>
-                        <p>Draag bij aan een veiligere omgeving voor alle Roblox-spelers.</p>
+                        <h3>Safer Roblox</h3>
+                        <p>Contribute to a safer environment for all Roblox players.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🎁</div>
-                        <h3>Word Beloon</h3>
-                        <p>Verdien beloningen voor waardevolle en geverifieerde meldingen.</p>
+                        <h3>Get Rewarded</h3>
+                        <p>Earn rewards for valuable and verified reports.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">📊</div>
-                        <h3>Transparante Lijst</h3>
-                        <p>Toegang tot een actuele lijst van bekende scammers.</p>
+                        <h3>Transparent List</h3>
+                        <p>Access an up-to-date list of known scammers.</p>
                     </div>
                     <div class="grid-item">
                         <div class="icon" style="color: var(--roblox-green);">🚫</div>
-                        <h3>Anonieme Meldingen</h3>
-                        <p>Meld scams anoniem om je privacy te beschermen.</p>
+                        <h3>Anonymous Reports</h3>
+                        <p>Report scams anonymously to protect your privacy.</p>
                     </div>
                 </div>
             </div>
@@ -510,10 +512,10 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 Roblox Scam Detectie Centrum. Alle rechten voorbehouden.</p>
+            <p>&copy; 2024 Roblox Scam Detection Center. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#">Privacybeleid</a>
-                <a href="#">Gebruiksvoorwaarden</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
                 <a href="#">Contact</a>
             </div>
         </div>
@@ -534,53 +536,53 @@
 
 
                 if (data.loggedIn) {
-                    // Als ingelogd
+                    // If logged in
                     if (data.user.avatar) {
                         userAvatar.src = data.user.avatar;
                     } else {
-                        // Gebruik een standaard avatar als er geen is
-                        userAvatar.src = 'https://via.placeholder.com/40/0077FF/FFFFFF?text=R'; // Een standaard avatar
+                        // Use a default avatar if none exists
+                        userAvatar.src = 'https://via.placeholder.com/40/0077FF/FFFFFF?text=R'; // A default avatar
                     }
-                    userDisplayName.textContent = data.user.displayName || data.user.email || 'Gebruiker';
+                    userDisplayName.textContent = data.user.displayName || data.user.email || 'User';
 
-                    // Toon de user info en verberg de login knop
+                    // Show user info and hide login button
                     loginBtn.classList.add('hidden');
                     userProfileInfo.classList.remove('hidden');
 
-                    // Toggle de dropdown bij het klikken op user-info
+                    // Toggle dropdown when clicking user-info
                     userProfileInfo.addEventListener('click', (event) => {
-                        event.stopPropagation(); // Voorkom dat de click bubbelt naar document
+                        event.stopPropagation(); // Prevent click from bubbling to document
                         userDropdownMenu.classList.toggle('show');
                     });
 
-                    // Sluit de dropdown als er ergens anders geklikt wordt
+                    // Close dropdown if clicked anywhere else
                     document.addEventListener('click', (event) => {
                         if (!userProfileInfo.contains(event.target) && userDropdownMenu.classList.contains('show')) {
                             userDropdownMenu.classList.remove('show');
                         }
                     });
 
-                    // Uitloggen functionaliteit voor de knop in de dropdown
+                    // Logout functionality for the button in the dropdown
                     logoutBtn.addEventListener('click', async (e) => {
                         e.preventDefault();
                         await fetch('/auth/logout');
-                        window.location.reload(); // Herlaad de pagina om uitgelogde staat te tonen
+                        window.location.reload(); // Reload page to show logged-out state
                     });
 
                 } else {
-                    // Als niet ingelogd
+                    // If not logged in
                     loginBtn.classList.remove('hidden');
                     userProfileInfo.classList.add('hidden');
                 }
             } catch (error) {
-                console.error('Fout bij controleren inlogstatus:', error);
-                // Val terug naar standaard niet-ingelogde staat bij fout
+                console.error('Error checking login status:', error);
+                // Fallback to default logged-out state on error
                 document.getElementById('login-btn').classList.remove('hidden');
                 document.getElementById('user-profile-info').classList.add('hidden');
             }
         }
 
-        // Roep de functie aan bij het laden van de pagina
+        // Call the function on page load
         checkLoginStatus();
     </script>
 </body>

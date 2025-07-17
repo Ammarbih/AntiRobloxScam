@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Account - Roblox Scam Detectie Centrum</title>
+    <title>My Account - Roblox Scam Detection Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -134,14 +134,14 @@
 </head>
 <body>
     <div class="account-container">
-        <h1>Mijn Account</h1>
+        <h1>My Account</h1>
         <div class="profile-details">
-            <img src="" alt="Profiel Avatar" class="profile-avatar" id="profile-avatar">
+            <img src="" alt="Profile Avatar" class="profile-avatar" id="profile-avatar">
             <p class="profile-name" id="profile-name"></p>
             <p class="profile-email" id="profile-email"></p>
         </div>
-        <button class="logout-btn" id="logout-btn">Uitloggen</button>
-        <a href="/index.html" class="back-home-btn">Terug naar Homepage</a>
+        <button class="logout-btn" id="logout-btn">Logout</button>
+        <a href="/index.html" class="back-home-btn">Back to Homepage</a>
     </div>
 
     <script>
@@ -152,25 +152,25 @@
 
                 if (data.loggedIn) {
                     document.getElementById('profile-avatar').src = data.user.avatar || 'https://via.placeholder.com/100/0077FF/FFFFFF?text=R';
-                    document.getElementById('profile-name').textContent = data.user.displayName || 'Gebruiker';
+                    document.getElementById('profile-name').textContent = data.user.displayName || 'User';
                     document.getElementById('profile-email').textContent = data.user.email || '';
                 } else {
-                    // Als niet ingelogd, omleiden naar login pagina
+                    // If not logged in, redirect to login page
                     window.location.href = '/login.html';
                 }
             } catch (error) {
-                console.error('Fout bij ophalen accountinformatie:', error);
-                window.location.href = '/login.html'; // Omleiden bij fout
+                console.error('Error fetching account information:', error);
+                window.location.href = '/login.html'; // Redirect on error
             }
         }
 
         document.getElementById('logout-btn').addEventListener('click', async () => {
             try {
                 await fetch('/auth/logout');
-                window.location.href = '/index.html'; // Omleiden naar homepage na uitloggen
+                window.location.href = '/index.html'; // Redirect to homepage after logout
             } catch (error) {
-                console.error('Fout bij uitloggen:', error);
-                alert('Er is een fout opgetreden bij het uitloggen. Probeer het opnieuw.');
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout. Please try again.');
             }
         });
 

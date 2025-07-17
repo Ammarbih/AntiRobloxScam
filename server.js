@@ -5,12 +5,14 @@ const session = require('express-session');
 const cors = require('cors');
 require('dotenv').config();
 
-console.log('Loaded GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID); // Tijdelijke debugregel
+console.log('Loaded GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+console.log('Loaded GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
 const app = express();
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+app.use(express.static('pictures')); // Serveer ook de 'pictures' map
 
 // CORS Middleware
 app.use(cors({
@@ -37,6 +39,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:5000/auth/google/callback" // Aangepast naar de nieuwe server URL
 },
 (accessToken, refreshToken, profile, done) => {
+    console.log('Google OAuth authentication successful.');
     console.log('Google Profile:', profile);
     return done(null, profile);
 }
@@ -44,17 +47,21 @@ passport.use(new GoogleStrategy({
 
 // Serialize user into the session
 passport.serializeUser((user, done) => {
+    console.log('Serializing user:', user.id);
     done(null, user);
 });
 
 // Deserialize user from the session
 passport.deserializeUser((obj, done) => {
+    console.log('Deserializing user:', obj.id);
     done(null, obj);
 });
 
 // Google OAuth Routes
-app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', (req, res, next) => {
+    console.log('Attempting Google OAuth authentication...');
+    next();
+}, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login.html' }),
