@@ -60,13 +60,19 @@ passport.deserializeUser((obj, done) => {
 // Google OAuth Routes
 app.get('/auth/google', (req, res, next) => {
     console.log('Attempting Google OAuth authentication...');
+    // Store the desired redirect URL in the session if provided
+    if (req.query.redirect) {
+        req.session.returnTo = req.query.redirect;
+    }
     next();
 }, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login.html' }),
     (req, res) => {
-        res.redirect('/index.html'); // Leid direct om naar de homepage
+        const redirectUrl = req.session.returnTo || '/dashboard.html'; // Use stored URL or default to dashboard
+        delete req.session.returnTo; // Clean up the session
+        res.redirect(redirectUrl);
     });
 
 // Nieuwe endpoint om de ingelogde gebruiker te controleren

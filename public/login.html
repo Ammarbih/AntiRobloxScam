@@ -104,7 +104,7 @@
     <div class="login-container">
         <h1>Welcome Back!</h1>
         <p>Log in to report scams and view the latest scammer lists.</p>
-        <button class="google-btn" onclick="window.location.href='http://localhost:5000/auth/google'">
+        <button class="google-btn" onclick="window.location.href='http://localhost:5000/auth/google?redirect=/dashboard.html'">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/512px-Google_%22G%22_logo.svg.png" alt="Google Logo">
             Sign in with Google
         </button>
@@ -115,7 +115,7 @@
 
     <script>
         function handleGoogleLogin() {
-            window.location.href = '/auth/google';
+            window.location.href = '/auth/google?redirect=/dashboard.html';
         }
     </script>
 </body>
