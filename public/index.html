@@ -541,7 +541,7 @@
                 <ul>
                     <li><a href="/index.html">Home</a></li>
                     <li><a href="/dashboard.html">Dashboard</a></li>
-                    <li><a href="#">Report</a></li>
+                    <li><a href="#" id="report-nav-btn">Report</a></li>
                     <li><a href="/scammers.html">Lists</a></li>
                     <li><a href="#">About Us</a></li>
                 </ul>
@@ -569,23 +569,8 @@
                 <h1>Protect Yourself Against Roblox Scams!</h1>
                 <p>Report, view, and combat online scams on Roblox. Together, we make Roblox safer for everyone.</p>
                 <div class="hero-buttons">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                    <a href="#" class="btn btn-primary">Report a Scam</a>
-                    <a href="/scammers.html" class="btn btn-secondary">View Scammer List</a>
-=======
-                    <a href="login.html" class="btn btn-primary">Report a Scam</a>
-                    <a href="login.html" class="btn btn-secondary">View Scammer List</a>
->>>>>>> Stashed changes
-=======
-                    <a href="login.html" class="btn btn-primary">Report a Scam</a>
-                    <a href="login.html" class="btn btn-secondary">View Scammer List</a>
->>>>>>> Stashed changes
-=======
-                    <a href="login.html" class="btn btn-primary">Report a Scam</a>
-                    <a href="login.html" class="btn btn-secondary">View Scammer List</a>
->>>>>>> Stashed changes
+                    <a href="login.html" class="btn btn-primary" id="report-scam-hero-btn">Report a Scam</a>
+                    <a href="/scammers.html" class="btn btn-secondary" id="view-scammers-btn">View Scammer List</a>
                 </div>
             </div>
         </section>
@@ -694,14 +679,72 @@
                         window.location.reload();
                     });
 
+                    // Set URLs for logged-in user
+                    const reportScamHeroBtn = document.getElementById('report-scam-hero-btn');
+                    if (reportScamHeroBtn) {
+                        reportScamHeroBtn.href = '/dashboard.html';
+                    }
+                    const reportNavBtn = document.getElementById('report-nav-btn');
+                    if (reportNavBtn) {
+                        reportNavBtn.href = '/dashboard.html';
+                    }
+                    const viewScammersBtn = document.getElementById('view-scammers-btn');
+                    if (viewScammersBtn) {
+                        viewScammersBtn.href = '/scammers.html';
+                    }
+
                 } else {
+                    console.log('User is NOT logged in. Setting login/redirect URLs.');
                     loginBtn.classList.remove('hidden');
                     userProfileInfo.classList.add('hidden');
+
+                    // Update "Report a Scam" link in hero section
+                    const reportScamHeroBtn = document.getElementById('report-scam-hero-btn');
+                    if (reportScamHeroBtn) {
+                        reportScamHeroBtn.href = '/login.html?redirect=/dashboard.html';
+                    }
+
+                    // Update "Report" link in navigation
+                    const reportNavBtn = document.getElementById('report-nav-btn');
+                    if (reportNavBtn) {
+                        reportNavBtn.href = '/login.html?redirect=/dashboard.html';
+                    }
+
+                    // Update "View Scammer List" link for not logged-in users
+                    const viewScammersBtn = document.getElementById('view-scammers-btn');
+                    if (viewScammersBtn) {
+                        viewScammersBtn.href = '/login.html?redirect=/scammers.html';
+                    }
                 }
+
+                // This block is now redundant as URLs are set in if/else above
+                // Update "View Scammer List" link based on login status (always happens after login check)
+                // const viewScammersBtn = document.getElementById('view-scammers-btn');
+                // if (viewScammersBtn) {
+                //     if (data.loggedIn) {
+                //         viewScammersBtn.href = '/scammers.html';
+                //     } else {
+                //         viewScammersBtn.href = '/login.html?redirect=/index.html';
+                //     }
+                // }
             } catch (error) {
                 console.error('Error checking login status:', error);
                 document.getElementById('login-btn').classList.remove('hidden');
                 document.getElementById('user-profile-info').classList.add('hidden');
+
+                // Default all buttons to login with a sensible redirect on error
+                const reportScamHeroBtn = document.getElementById('report-scam-hero-btn');
+                if (reportScamHeroBtn) {
+                    reportScamHeroBtn.href = '/login.html?redirect=/dashboard.html';
+                }
+                const reportNavBtn = document.getElementById('report-nav-btn');
+                if (reportNavBtn) {
+                    reportNavBtn.href = '/login.html?redirect=/dashboard.html';
+                }
+                const viewScammersBtn = document.getElementById('view-scammers-btn');
+                if (viewScammersBtn) {
+                    viewScammersBtn.href = '/login.html?redirect=/scammers.html'; // Corrected redirect for error case
+                }
             }
         }
 

@@ -63,6 +63,9 @@ app.get('/auth/google', (req, res, next) => {
     // Store the desired redirect URL in the session if provided
     if (req.query.redirect) {
         req.session.returnTo = req.query.redirect;
+        console.log('Stored redirect URL in session:', req.session.returnTo);
+    } else {
+        console.log('No redirect URL provided in query, or query.redirect is empty. Defaulting to dashboard.');
     }
     next();
 }, passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -70,7 +73,8 @@ app.get('/auth/google', (req, res, next) => {
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login.html' }),
     (req, res) => {
-        const redirectUrl = req.session.returnTo || '/dashboard.html'; // Use stored URL or default to dashboard
+        console.log('Google OAuth callback. Session returnTo:', req.session.returnTo);
+        const redirectUrl = req.session.returnTo || '/index.html'; // Use stored URL or default to dashboard
         delete req.session.returnTo; // Clean up the session
         res.redirect(redirectUrl);
     });

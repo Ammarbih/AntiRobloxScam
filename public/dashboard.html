@@ -836,12 +836,12 @@
                 } else {
                     console.log('User is NOT logged in. Redirecting to login page.');
                     // If not logged in, redirect to login page
-                    window.location.href = '/login.html?redirect=/dashboard.html';
+                    window.location.href = '/login.html?redirect=/index.html';
                 }
             } catch (error) {
                 console.error('Error checking login status:', error);
                 // Fallback to default logged-out state on error and redirect
-                window.location.href = '/login.html?redirect=/dashboard.html';
+                window.location.href = '/login.html?redirect=/index.html';
             }
         }
 
