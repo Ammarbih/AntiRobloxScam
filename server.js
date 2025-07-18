@@ -100,6 +100,13 @@ app.get('/auth/logout', (req, res, next) => {
     });
 });
 
+// Nieuw endpoint voor scammerlijst
+app.get('/api/scammers', (req, res) => {
+    const scammers = [
+    ];
+    res.json(scammers);
+});
+
 // Root route om door te verwijzen naar index.html
 app.get('/', (req, res) => {
     res.redirect('/index.html');
