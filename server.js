@@ -100,6 +100,11 @@ app.get('/auth/logout', (req, res, next) => {
     });
 });
 
+// Root route om door te verwijzen naar index.html
+app.get('/', (req, res) => {
+    res.redirect('/index.html');
+});
+
 // Stel de poort in
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server draait op poort ${PORT}`)); 

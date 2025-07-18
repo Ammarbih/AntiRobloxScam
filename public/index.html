@@ -225,12 +225,31 @@
         .hero {
             text-align: center;
             padding: 80px 20px;
-            background: url('/pictures/Main1.jpg') no-repeat center center/cover; /* Gebruik de nieuwe afbeelding als achtergrond */
-            background-attachment: fixed; /* Nieuw: Zorgt voor het parallax effect */
             color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 3px rgba(255, 0, 0, 0.3);
             position: relative;
             z-index: 1;
+            overflow: hidden; /* Zorgt ervoor dat de achtergrondafbeeldingen binnen de hero blijven */
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1.5s ease-in-out; /* Langer transition voor smoother fade */
+            z-index: -3; /* Zorg ervoor dat het helemaal achteraan ligt */
+        }
+
+        .hero-background.active {
+            opacity: 1;
+        }
+
+        .hero-background:not(.active) {
+            opacity: 0;
         }
 
         .hero::before {
@@ -241,7 +260,7 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0,0,0,0.55); /* Donkerder gemaakt (was 0.4) */
-            z-index: -1;
+            z-index: -2; /* Zorg ervoor dat de overlay boven de achtergrond ligt, maar onder de content */
         }
 
         .hero h1 {
@@ -447,6 +466,8 @@
 
     <main>
         <section class="hero">
+            <div class="hero-background" id="hero-bg-1" style="background-image: url('/Main1.jpg');"></div>
+            <div class="hero-background" id="hero-bg-2" style="background-image: url('/Main2.webp');"></div>
             <div class="container">
                 <h1>Protect Yourself Against Roblox Scams!</h1>
                 <p>Report, view, and combat online scams on Roblox. Together, we make Roblox safer for everyone.</p>
@@ -534,8 +555,10 @@
                 const userDropdownMenu = document.getElementById('user-dropdown-menu');
                 const logoutBtn = document.getElementById('logout-btn');
 
+                console.log('Login status data:', data);
 
                 if (data.loggedIn) {
+                    console.log('User is logged in.');
                     // If logged in
                     if (data.user.avatar) {
                         userAvatar.src = data.user.avatar;
@@ -570,6 +593,7 @@
                     });
 
                 } else {
+                    console.log('User is NOT logged in.');
                     // If not logged in
                     loginBtn.classList.remove('hidden');
                     userProfileInfo.classList.add('hidden');
@@ -584,6 +608,38 @@
 
         // Call the function on page load
         checkLoginStatus();
+
+        // Achtergrondafbeeldingen wisselen
+        const heroBg1 = document.getElementById('hero-bg-1');
+        const heroBg2 = document.getElementById('hero-bg-2');
+        const images = ['/Main1.jpg', '/Main2.webp'];
+        let currentImageIndex = 0;
+
+        console.log('Hero background elements initialized:', heroBg1, heroBg2);
+
+        // Stel initieel de eerste afbeelding in als actief
+        heroBg1.classList.add('active');
+        heroBg2.classList.remove('active');
+
+        function switchHeroBackground() {
+            console.log('Switching hero background...');
+            if (currentImageIndex === 0) {
+                // Wissel naar afbeelding 2
+                heroBg1.classList.remove('active');
+                heroBg2.classList.add('active');
+                currentImageIndex = 1;
+            } else {
+                // Wissel naar afbeelding 1
+                heroBg1.classList.add('active');
+                heroBg2.classList.remove('active');
+                currentImageIndex = 0;
+            }
+            console.log('Current image index:', currentImageIndex);
+        }
+
+        // Wissel elke 5 seconden van achtergrond
+        setInterval(switchHeroBackground, 5000); // 5000 milliseconden = 5 seconden
+
     </script>
 </body>
 </html> 
