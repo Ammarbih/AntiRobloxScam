@@ -827,48 +827,61 @@
             <span class="close-button">&times;</span>
             <div class="modal-body">
                 <div class="modal-step" id="step-1">
-                    <h2 class="step-title">Sorry you got scammed!</h2>
-                    <p class="step-instruction">1. What game did you get scammed on?</p>
+                    <h2 class="step-title">Rapporteer een Scammer</h2>
+                    <p class="step-instruction">1. Wat is de Roblox gebruikersnaam van de scammer?</p>
                     <div class="form-group">
-                        <label for="game-name"></label>
-                        <input type="text" id="game-name" placeholder="e.g., Adopt Me!, Royale High" required>
+                        <label for="scammer-username-input"></label>
+                        <input type="text" id="scammer-username-input" name="scammerUsername" placeholder="e.g., JohnDoe, scammer_bot" required>
                     </div>
                     <div class="modal-nav">
-                        <button type="button" class="btn btn-primary next-step-btn">Next</button>
+                        <button type="button" class="btn btn-primary next-step-btn">Volgende</button>
                     </div>
                 </div>
 
                 <div class="modal-step hidden" id="step-2">
-                    <h2 class="step-title">Describe the Scam</h2>
-                    <p class="step-instruction">2. Please describe in detail how the scam happened:</p>
+                    <h2 class="step-title">Op welke game?</h2>
+                    <p class="step-instruction">2. Op welke game ben je gescammed?</p>
                     <div class="form-group">
-                        <label for="scam-description"></label>
-                        <textarea id="scam-description" placeholder="e.g., They promised free Robux if I gave them my password..." required></textarea>
+                        <label for="game-name"></label>
+                        <input type="text" id="game-name" name="gameScammed" placeholder="e.g., Adopt Me!, Royale High" required>
                     </div>
                     <div class="modal-nav">
-                        <button type="button" class="btn btn-secondary prev-step-btn">Previous</button>
-                        <button type="button" class="btn btn-primary next-step-btn">Next</button>
+                        <button type="button" class="btn btn-secondary prev-step-btn">Vorige</button>
+                        <button type="button" class="btn btn-primary next-step-btn">Volgende</button>
                     </div>
                 </div>
 
                 <div class="modal-step hidden" id="step-3">
-                    <h2 class="step-title">Provide Evidence</h2>
-                    <p class="step-instruction">3. Upload any screenshots or videos that can serve as evidence:</p>
+                    <h2 class="step-title">Beschrijf de Scam</h2>
+                    <p class="step-instruction">3. Beschrijf in detail hoe de scam gebeurde:</p>
                     <div class="form-group">
-                        <label for="scam-evidence"></label>
-                        <input type="file" id="scam-evidence" accept="image/*,video/*">
+                        <label for="scam-description"></label>
+                        <textarea id="scam-description" name="reportDetails" placeholder="e.g., Ze beloofden gratis Robux als ik mijn wachtwoord gaf..." required></textarea>
                     </div>
                     <div class="modal-nav">
-                        <button type="button" class="btn btn-secondary prev-step-btn">Previous</button>
-                        <button type="submit" class="btn btn-primary" id="submit-report-btn">Submit Report</button>
+                        <button type="button" class="btn btn-secondary prev-step-btn">Vorige</button>
+                        <button type="button" class="btn btn-primary next-step-btn">Volgende</button>
                     </div>
                 </div>
 
                 <div class="modal-step hidden" id="step-4">
-                    <h2 class="step-title">Thank You!</h2>
-                    <p class="final-message">Your report will be verified by our team, and you will be notified once it's approved. Thank you for making Roblox safer!</p>
+                    <h2 class="step-title">Bewijs Leveren</h2>
+                    <p class="step-instruction">4. Upload screenshots of video's die als bewijs kunnen dienen (optioneel):</p>
+                    <div class="form-group">
+                        <label for="scam-evidence"></label>
+                        <input type="file" id="scam-evidence" name="mediaEvidence" accept="image/*,video/*"> <!-- Type gewijzigd naar file -->
+                    </div>
                     <div class="modal-nav">
-                        <button type="button" class="btn btn-primary close-modal-btn">Close</button>
+                        <button type="button" class="btn btn-secondary prev-step-btn">Vorige</button>
+                        <button type="submit" class="btn btn-primary" id="submit-report-btn">Rapport Indienen</button>
+                    </div>
+                </div>
+
+                <div class="modal-step hidden" id="step-5">
+                    <h2 class="step-title">Bedankt!</h2>
+                    <p class="final-message">Je rapport wordt door ons team geverifieerd en je krijgt een melding zodra het is goedgekeurd. Bedankt dat je Roblox veiliger maakt!</p>
+                    <div class="modal-nav">
+                        <button type="button" class="btn btn-primary close-modal-btn">Sluiten</button>
                     </div>
                 </div>
             </div>
@@ -979,11 +992,12 @@
 
         function closeAndResetModal() {
             reportScamModal.style.display = 'none';
+            document.getElementById('scammer-username-input').value = '';
             document.getElementById('game-name').value = '';
             document.getElementById('scam-description').value = '';
-            document.getElementById('scam-evidence').value = ''; // Clear file input
+            document.getElementById('scam-evidence').value = ''; // Bestand input resetten
             currentStep = 0;
-            showStep(currentStep); // Reset to first step for next open
+            showStep(currentStep); // Reset naar eerste stap
         }
 
         // Event listener for opening the modal
@@ -1007,68 +1021,93 @@
         nextStepBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 console.log('Next button clicked. Current Step:', currentStep);
-                // Basic validation for current step before moving next
                 let isValid = true;
-                if (currentStep === 0) { // Step 1: Game Name
-                    if (!document.getElementById('game-name').value.trim()) {
-                        alert('Please enter the game name.');
+                let currentInput;
+
+                if (currentStep === 0) { // Stap 1: Scammer Gebruikersnaam
+                    currentInput = document.getElementById('scammer-username-input');
+                    if (!currentInput.value.trim()) {
+                        alert('Voer de gebruikersnaam van de scammer in.');
                         isValid = false;
-                    } else {
-                        console.log('Step 1 (Game Name) is valid.');
                     }
-                } else if (currentStep === 1) { // Step 2: Description
-                    if (!document.getElementById('scam-description').value.trim()) {
-                        alert('Please provide a description of the scam.');
+                } else if (currentStep === 1) { // Stap 2: Game Naam
+                    currentInput = document.getElementById('game-name');
+                    if (!currentInput.value.trim()) {
+                        alert('Voer de game naam in.');
                         isValid = false;
-                    } else {
-                        console.log('Step 2 (Description) is valid.');
+                    }
+                } else if (currentStep === 2) { // Stap 3: Beschrijving
+                    currentInput = document.getElementById('scam-description');
+                    if (!currentInput.value.trim()) {
+                        alert('Geef een beschrijving van de scam.');
+                        isValid = false;
                     }
                 }
+                // Geen validatie voor stap 4 (bewijs) omdat dit optioneel is en nu een bestand is
 
                 if (isValid) {
                     console.log('Proceeding to next step.');
-                    modalSteps[currentStep].classList.add('exit-left'); // Animate current step out
+                    modalSteps[currentStep].classList.add('exit-left');
                     currentStep++;
                     if (currentStep < modalSteps.length) {
                         showStep(currentStep);
+                    } else {
+                        console.error('Attempted to go beyond last step.');
                     }
-                } else {
-                    console.log('Validation failed. Staying on current step.');
                 }
             });
         });
 
         prevStepBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                console.log('Previous button clicked. Current Step:', currentStep);
                 currentStep--;
                 showStep(currentStep);
             });
         });
 
         // Handle final form submission
-        submitReportBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default button behavior
+        submitReportBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
 
-            const description = document.getElementById('scam-description').value;
-            const gameName = document.getElementById('game-name').value;
-            const evidenceFile = document.getElementById('scam-evidence').files[0];
+            const scammerUsername = document.getElementById('scammer-username-input').value;
+            const gameScammed = document.getElementById('game-name').value;
+            const reportDetails = document.getElementById('scam-description').value;
+            const mediaEvidenceFile = document.getElementById('scam-evidence').files[0]; // Haal het bestand op
 
-            console.log('Final Scam Report Submitted:');
-            console.log('Game Name:', gameName);
-            console.log('Description:', description);
-            console.log('Evidence File:', evidenceFile ? evidenceFile.name : 'No file');
+            // Gebruik FormData voor bestandsuploads
+            const formData = new FormData();
+            formData.append('scammerUsername', scammerUsername);
+            formData.append('gameScammed', gameScammed);
+            formData.append('reportDetails', reportDetails);
+            // Voeg het bestand alleen toe als het bestaat
+            if (mediaEvidenceFile) {
+                formData.append('mediaEvidence', mediaEvidenceFile);
+            }
+            formData.append('scamType', 'Niet geselecteerd'); // Behoud deze voor compatibiliteit, hoewel niet in DB
 
-            // Simulate API call and then show thank you step
-            // In a real application, you would send this data to your server
-            // and handle success/error responses.
+            try {
+                const response = await fetch('/api/reports', {
+                    method: 'POST',
+                    // GEEN 'Content-Type': 'application/json' header instellen bij FormData
+                    body: formData // Gebruik FormData direct
+                });
 
-            // For now, directly move to the thank you step
-            modalSteps[currentStep].classList.add('exit-left'); // Animate current step out
-            currentStep++; // Move to the thank you step (step 4, index 3)
-            showStep(currentStep);
+                const result = await response.json();
 
-            // Reset form fields after successful submission (or once modal is truly closed)
-            // This will be handled by closeAndResetModal when the final close button is clicked.
+                if (response.ok) {
+                    console.log('Report submitted successfully:', result);
+                    modalSteps[currentStep].classList.add('exit-left');
+                    currentStep++;
+                    showStep(currentStep); // Show thank you step
+                } else {
+                    console.error('Error submitting report:', result.message);
+                    alert('Fout bij indienen rapportage: ' + (result.message || 'Onbekende fout'));
+                }
+            } catch (error) {
+                console.error('Network error submitting report:', error);
+                alert('Netwerkfout: Kan rapportage niet indienen.');
+            }
         });
 
     </script>

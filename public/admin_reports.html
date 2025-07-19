@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Rapportages</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --roblox-blue: #0077FF;
+            --roblox-purple: #8B5CF6;
+            --roblox-green: #22C55E;
+            --roblox-red: #EF4444;
+            --text-dark: #333333;
+            --text-light: #f9fafb;
+            --bg-light: #f9fafb;
+            --bg-gradient-start: #DBEAFE; /* Light blue */
+            --bg-gradient-end: #EDE9FE; /* Light purple */
+            --card-bg: #FFFFFF;
+            --border-light: #E5E7EB;
+            --shadow-light: rgba(0,0,0,0.05);
+            --shadow-medium: rgba(0,0,0,0.1);
+            --shadow-strong: rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            color: var(--roblox-blue);
+            text-shadow: 2px 2px 0px var(--shadow-light);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--roblox-blue);
+        }
+
+        /* Admin Reports Page Styles */
+        main.admin-reports-page {
+            flex-grow: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px var(--shadow-medium);
+        }
+
+        .section-title {
+            color: var(--roblox-blue);
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 15px;
+        }
+
+        .reports-filter {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .reports-filter label {
+            font-weight: bold;
+        }
+
+        .reports-filter select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border-light);
+            background-color: var(--bg-light);
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .reports-table th,
+        .reports-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .reports-table th {
+            background-color: var(--bg-gradient-start);
+            color: var(--text-dark);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .reports-table tr:hover {
+            background-color: #F3F4F6;
+        }
+
+        .reports-table .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .reports-table .status-resolved {
+            color: var(--roblox-green);
+            font-weight: bold;
+        }
+
+        .reports-table .status-dismissed {
+            color: var(--roblox-red);
+            font-weight: bold;
+        }
+
+        .report-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .report-actions .btn-resolve {
+            background-color: var(--roblox-green);
+            color: white;
+        }
+
+        .report-actions .btn-resolve:hover {
+            background-color: #1A9C4C;
+        }
+
+        .report-actions .btn-dismiss {
+            background-color: var(--roblox-red);
+            color: white;
+        }
+
+        .report-actions .btn-dismiss:hover {
+            background-color: #CC3333;
+        }
+
+        .no-reports-message {
+            text-align: center;
+            padding: 30px;
+            color: #6B7280;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-dark);
+            font-size: 0.9em;
+            margin-top: auto;
+            background-color: white;
+            box-shadow: 0 -2px 4px var(--shadow-light);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="logo.png" alt="AntiRobloxScam Logo">
+                <h1>Admin</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin_dashboard.html">Dashboard</a></li>
+                    <li><a href="/admin_users.html">Gebruikers</a></li>
+                    <li><a href="/admin_scammers.html">Scammers</a></li>
+                    <li><a href="/admin_reports.html">Rapportages</a></li>
+                    <li><a href="/admin_settings.html">Instellingen</a></li>
+                    <li><a href="/auth/logout">Uitloggen</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="admin-reports-page container">
+        <h2 class="section-title">Beheer Rapportages</h2>
+
+        <div class="reports-filter">
+            <label for="reportStatusFilter">Filter op status:</label>
+            <select id="reportStatusFilter">
+                <option value="all">Alle</option>
+                <option value="pending">Openstaand</option>
+                <option value="resolved">Afgehandeld</option>
+                <option value="dismissed">Afgekeurd</option>
+            </select>
+        </div>
+
+        <table class="reports-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Gerapporteerd door</th>
+                    <th>Gebruikersnaam Scammer</th>
+                    <th>Game</th>
+                    <th>Details</th>
+                    <th>Datum</th>
+                    <th>Status</th>
+                    <th>Media</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+                <!-- Rapportages worden hier dynamisch geladen -->
+                <tr>
+                    <td colspan="8" class="no-reports-message">Laden van rapportages...</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2023 AntiRobloxScam. Alle rechten voorbehouden.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const reportsTableBody = document.getElementById('reportsTableBody');
+            const reportStatusFilter = document.getElementById('reportStatusFilter');
+
+            async function fetchReports(status = 'all') {
+                reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Laden van rapportages...</td></tr>';
+                try {
+                    const response = await fetch(`/api/admin/reports?status=${status}`);
+                    if (!response.ok) {
+                        if (response.status === 403) {
+                            reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message" style="color: var(--roblox-red);">Toegang geweigerd. U bent geen beheerder.</td></tr>';
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const reports = await response.json();
+
+                    reportsTableBody.innerHTML = ''; // Maak de tabel leeg
+
+                    if (reports.length === 0) {
+                        reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Geen rapportages gevonden voor de geselecteerde status.</td></tr>';
+                        return;
+                    }
+
+                    reports.forEach(report => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${report.id}</td>
+                            <td>${report.reportedBy}</td>
+                            <td>${report.scammerUsername}</td>
+                            <td>${report.gameScammed || 'N/A'}</td>
+                            <td>${report.reportDetails}</td>
+                            <td>${new Date(report.reportDate).toLocaleDateString()}</td>
+                            <td class="status-${report.status}">${report.status}</td>
+                            <td>${report.mediaEvidence ? `<a href="${report.mediaEvidence}" target="_blank">Bekijk Media</a>` : 'Geen'}</td>
+                            <td class="report-actions">
+                                ${report.status === 'pending' ? `<button class="btn-resolve" data-id="${report.id}">Afhandelen</button>` : ''}
+                                ${report.status === 'pending' ? `<button class="btn-dismiss" data-id="${report.id}">Afkeuren</button>` : ''}
+                            </td>
+                        `;
+                        reportsTableBody.appendChild(row);
+                    });
+
+                    attachEventListeners();
+
+                } catch (error) {
+                    console.error('Fout bij ophalen rapportages:', error);
+                    reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message" style="color: var(--roblox-red);">Fout bij laden rapportages.</td></tr>';
+                }
+            }
+
+            async function updateReportStatus(reportId, newStatus) {
+                try {
+                    const response = await fetch(`/api/admin/reports/${reportId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    console.log(result.message);
+                    fetchReports(reportStatusFilter.value); // Ververs de lijst na update
+
+                } catch (error) {
+                    console.error('Fout bij bijwerken rapportagestatus:', error);
+                    alert('Fout bij bijwerken status: ' + error.message);
+                }
+            }
+
+            function attachEventListeners() {
+                document.querySelectorAll('.btn-resolve').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const reportId = e.target.dataset.id;
+                        updateReportStatus(reportId, 'resolved');
+                    });
+                });
+
+                document.querySelectorAll('.btn-dismiss').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const reportId = e.target.dataset.id;
+                        updateReportStatus(reportId, 'dismissed');
+                    });
+                });
+            }
+
+            reportStatusFilter.addEventListener('change', (event) => {
+                fetchReports(event.target.value);
+            });
+
+            // Initiële laad van rapportages
+            fetchReports(reportStatusFilter.value);
+        });
+    </script>
+</body>
+</html> 

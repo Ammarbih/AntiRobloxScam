@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --roblox-blue: #0077FF;
+            --roblox-purple: #8B5CF6;
+            --roblox-green: #22C55E;
+            --roblox-red: #EF4444;
+            --text-dark: #333333;
+            --text-light: #f9fafb;
+            --bg-light: #f9fafb;
+            --bg-gradient-start: #DBEAFE; /* Light blue */
+            --bg-gradient-end: #EDE9FE; /* Light purple */
+            --card-bg: #FFFFFF;
+            --border-light: #E5E7EB;
+            --shadow-light: rgba(0,0,0,0.05);
+            --shadow-medium: rgba(0,0,0,0.1);
+            --shadow-strong: rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            color: var(--roblox-blue);
+            text-shadow: 2px 2px 0px var(--shadow-light);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--roblox-blue);
+        }
+
+        /* New Dashboard Styles */
+        .admin-dashboard {
+            flex-grow: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr; /* Default for mobile */
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .admin-dashboard {
+                grid-template-columns: 2fr 1fr; /* Main content and sidebar */
+            }
+        }
+
+        .dashboard-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px var(--shadow-medium);
+            padding: 30px;
+        }
+
+        .section-title {
+            color: var(--roblox-blue);
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(to right, var(--roblox-blue), var(--roblox-purple));
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow-strong);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px var(--shadow-strong);
+        }
+
+        .stat-card .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .stat-card p {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .activity-item {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--roblox-green);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            box-shadow: 0 1px 3px var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-item .timestamp {
+            color: #6B7280;
+            font-size: 0.85em;
+        }
+
+        .quick-actions {
+            margin-top: 40px;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: var(--roblox-blue);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px var(--shadow-medium);
+        }
+
+        .action-button:hover {
+            background-color: #0056CC;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-dark);
+            font-size: 0.9em;
+            margin-top: auto; /* Push footer to the bottom */
+            background-color: white;
+            box-shadow: 0 -2px 4px var(--shadow-light);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="logo.png" alt="AntiRobloxScam Logo">
+                <h1>Admin</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin_dashboard.html">Dashboard</a></li>
+                    <li><a href="/admin_users.html">Gebruikers</a></li>
+                    <li><a href="/admin_scammers.html">Scammers</a></li>
+                    <li><a href="/admin_settings.html">Instellingen</a></li>
+                    <li><a href="/auth/logout">Uitloggen</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="admin-dashboard container">
+        <div class="dashboard-section main-content">
+            <h2 class="section-title">Dashboard Overzicht</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users icon"></i>
+                    <h3>Totaal Gebruikers</h3>
+                    <p id="totalUsers">1,234</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-slash icon"></i>
+                    <h3>Actieve Scammers</h3>
+                    <p id="activeScammers">56</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle icon"></i>
+                    <h3>Nieuwe Rapportages</h3>
+                    <p id="newReports">12</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle icon"></i>
+                    <h3>Afgehandeld</h3>
+                    <p id="resolvedReports">458</p>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2 class="section-title">Snelle Acties</h2>
+                <a href="/admin_users.html" class="action-button">
+                    <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+                </a>
+                <a href="/admin_scammers.html" class="action-button">
+                    <i class="fas fa-plus-circle"></i> Scammer Toevoegen
+                </a>
+                <a href="/admin_reports.html" class="action-button">
+                    <i class="fas fa-clipboard-list"></i> Rapportages Bekijken
+                </a>
+            </div>
+        </div>
+
+        <div class="dashboard-section sidebar">
+            <h2 class="section-title">Recente Activiteit</h2>
+            <div class="activity-list">
+                <ul>
+                    <li class="activity-item">
+                        <span>Gebruiker JohnDoe heeft een nieuw rapport ingediend.</span>
+                        <span class="timestamp">2 minuten geleden</span>
+                    </li>
+                    <li class="activity-item">
+                        <span>Scammer 'RobloxScamBot' toegevoegd door Admin.</span>
+                        <span class="timestamp">1 uur geleden</span>
+                    </li>
+                    <li class="activity-item">
+                        <span>Gebruiker JaneSmith heeft haar wachtwoord bijgewerkt.</span>
+                        <span class="timestamp">3 uur geleden</span>
+                    </li>
+                    <li class="activity-item">
+                        <span>Nieuwe scam-categorie 'Phishing Links' toegevoegd.</span>
+                        <span class="timestamp">Gisteren</span>
+                    </li>
+                    <li class="activity-item">
+                        <span>Rapport #2023005 afgehandeld.</span>
+                        <span class="timestamp">2 dagen geleden</span>
+                    </li>
+                    <li class="activity-item">
+                        <span>Admin heeft instellingen bijgewerkt.</span>
+                        <span class="timestamp">3 dagen geleden</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2023 AntiRobloxScam. Alle rechten voorbehouden.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html> 
