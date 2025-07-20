@@ -271,18 +271,73 @@
             animation: fadeInDown 1s ease-out;
         }
 
+        .hero .hero-title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 4.8em; /* Iets groter dan 4.5em */
+            margin-bottom: 25px; /* Iets meer ruimte onder de titel */
+            line-height: 1.1;
+            animation: fadeInDown 1s ease-out;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3); /* Algemene schaduw voor de hele titel */
+        }
+
+        .hero .hero-title .submit,
+        .hero .hero-title .earn {
+            display: block; /* Forceer op nieuwe regel */
+            color: white;
+            /* Tekstschaduw komt nu van .hero-title */
+        }
+
+        .hero .hero-title .and {
+            display: block;
+            font-size: 0.7em; /* Iets kleiner voor de ampersand */
+            color: #FFD700; /* Goudkleur voor de ampersand, opvallend */
+            margin: 10px 0; /* Ruimte rond de ampersand */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
         .hero p {
-            font-size: 1.5em;
-            margin-bottom: 40px;
-            max-width: 800px;
+            font-size: 1.6em; /* Iets groter voor de paragraaf tekst */
+            margin-bottom: 45px; /* Iets meer ruimte onder de paragraaf */
+            max-width: 850px; /* Iets breder voor betere leesbaarheid */
             margin-left: auto;
             margin-right: auto;
             animation: fadeInUp 1s ease-out 0.2s;
         }
 
         .hero-buttons .btn {
-            margin: 0 10px;
+            margin: 0 12px; /* Iets meer ruimte tussen knoppen */
             animation: fadeIn 1s ease-out 0.4s;
+        }
+
+        /* Knoppen algemeen - prominenter maken */
+        .btn {
+            padding: 14px 30px; /* Net iets groter dan 12px 25px */
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15); /* Prominentere schaduw */
+            font-size: 1.05em; /* Net iets groter lettertype */
+        }
+
+        .btn:hover {
+            transform: translateY(-4px); /* Iets meer lift */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25); /* Sterkere schaduw bij hover */
+        }
+
+        /* Hero sectie padding */
+        .hero {
+            padding: 90px 20px; /* Meer verticale ruimte */
+        }
+
+        /* Responsive aanpassingen voor titel en knoppen */
+        @media (max-width: 768px) {
+            .hero .hero-title {
+                font-size: 3.5em;
+            }
+            .hero p {
+                font-size: 1.3em;
+            }
+            .btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
         }
 
         .section {
@@ -540,9 +595,10 @@
             <nav>
                 <ul>
                     <li><a href="/index.html">Home</a></li>
-                    <li><a href="/dashboard.html">Dashboard</a></li>
+                    <!-- <li><a href="/dashboard.html">Dashboard</a></li> Commented out as per request -->
                     <li><a href="#" id="report-nav-btn">Report</a></li>
                     <li><a href="/scammers.html">Lists</a></li>
+                    <li><a href="/subscriptions.html">Subscriptions</a></li>
                     <li><a href="#">About Us</a></li>
                 </ul>
             </nav>
@@ -567,8 +623,13 @@
             <div class="hero-background active" id="hero-bg-1" style="background-image: url('/Main1.jpg');"></div>
             <div class="hero-background" id="hero-bg-2" style="background-image: url('/Main2.webp');"></div>
             <div class="container">
-                <h1>Protect Yourself Against Roblox Scams!</h1>
-                <p>Report, view, and combat online scams on Roblox. Together, we make Roblox safer for everyone.</p>
+                <h1 class="hero-title">
+                    <span class="submit">SUBMIT A SCAM</span>
+                    <span class="and">&</span>
+                    <span class="earn">EARN A ROBUX GIFTCARD!</span>
+                </h1>
+
+                <p>Have you been robbed off a valuable item? Report it and earn a Robux Giftcard!</p>
                 <div class="hero-buttons">
                     <a href="login.html" class="btn btn-primary" id="report-scam-hero-btn">Report a Scam</a>
                     <a href="/scammers.html" class="btn btn-secondary" id="view-scammers-btn">View Scammer List</a>
@@ -591,9 +652,9 @@
                         <p>Our team of experts carefully checks each report. Upon approval, we'll reward you!</p>
                     </div>
                     <div class="grid-item">
-                        <div class="icon">🔍</div>
-                        <h3>3. Protect Others</h3>
-                        <p>The scammer is added to our list, so other players are warned.</p>
+                        <div class="icon">🎉</div>
+                        <h3>3. Claim reward!</h3>
+                        <p>After each succesfull scam report, you will be rewarded with a Robux Giftcard!</p>
                     </div>
                 </div>
             </div>
@@ -677,7 +738,7 @@
                     logoutBtn.addEventListener('click', async (e) => {
                         e.preventDefault();
                         await fetch('/auth/logout');
-                        window.location.reload();
+                        window.location.href = '/index.html'; // Redirect naar homepage na uitloggen
                     });
 
                     // Set URLs for logged-in user
@@ -716,6 +777,7 @@
                     if (viewScammersBtn) {
                         viewScammersBtn.href = '/login.html?redirect=/scammers.html';
                     }
+                    // Verwijder de omleiding naar login.html hier. De homepage hoeft niet door te sturen als niet ingelogd.
                 }
 
                 // This block is now redundant as URLs are set in if/else above
@@ -725,7 +787,7 @@
                 //     if (data.loggedIn) {
                 //         viewScammersBtn.href = '/scammers.html';
                 //     } else {
-                //         viewScammersBtn.href = '/login.html?redirect=/index.html';
+                //         viewScammersBtn.href = '/index.html';
                 //     }
                 // }
             } catch (error) {

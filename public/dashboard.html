@@ -723,9 +723,10 @@
             <nav>
                 <ul>
                     <li><a href="/index.html">Home</a></li>
-                    <li><a href="/dashboard.html">Dashboard</a></li>
-                    <li><a href="#">Report</a></li>
-                    <li><a href="#">Lists</a></li>
+                    <!-- <li><a href="/dashboard.html">Dashboard</a></li> Commented out as per request -->
+                    <li><a href="/dashboard.html" id="report-nav-btn">Report</a></li> <!-- Dashboard link now points to Report -->
+                    <li><a href="/scammers.html">Lists</a></li>
+                    <li><a href="/subscriptions.html">Subscriptions</a></li> <!-- Nieuwe link toegevoegd -->
                     <li><a href="#">About Us</a></li>
                 </ul>
             </nav>
@@ -736,6 +737,7 @@
                     <span class="user-display-name" id="user-display-name"></span>
                     <div class="dropdown-menu" id="user-dropdown-menu">
                         <a href="/my_account.html">My Account</a>
+                        <a href="/my_reports.html">My Reports</a> <!-- Nieuwe link toegevoegd -->
                         <div class="divider"></div>
                         <a href="#" class="logout-option" id="logout-btn">Logout</a>
                     </div>
@@ -936,7 +938,12 @@
                 } else {
                     console.log('User is NOT logged in. Redirecting to login page.');
                     // If not logged in, redirect to login page
-                    window.location.href = '/login.html?redirect=/index.html';
+                    // window.location.href = '/login.html?redirect=/index.html'; // Deze omleiding verwijderen
+                }
+                // Update "Report" link in navigation for logged in/out users
+                const reportNavBtn = document.getElementById('report-nav-btn');
+                if (reportNavBtn) {
+                    reportNavBtn.href = '/dashboard.html';
                 }
             } catch (error) {
                 console.error('Error checking login status:', error);

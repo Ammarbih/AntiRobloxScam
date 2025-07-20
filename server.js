@@ -165,7 +165,7 @@ app.get('/auth/google/callback',
             console.log('Admin user logged in. Redirecting to admin dashboard.');
             res.redirect('/admin_dashboard.html');
         } else {
-            const redirectUrl = req.session.returnTo || '/index.html'; // Use stored URL or default to dashboard
+            const redirectUrl = req.session.returnTo || '/dashboard.html'; // Veranderd van /index.html naar /dashboard.html
             delete req.session.returnTo; // Clean up the session
             res.redirect(redirectUrl);
         }

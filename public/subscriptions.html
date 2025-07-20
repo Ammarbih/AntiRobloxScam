@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Scammer List</title>
+    <title>Subscriptions - Roblox Scam Detection Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -29,6 +29,9 @@
             color: var(--text-dark);
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
@@ -216,17 +219,14 @@
             background-color: #6D28D9;
         }
 
-        /* Scammer List Specifieke stijlen */
-        .section {
-            padding: 60px 0;
+        /* Subscription page specific styles */
+        main.subscription-page {
+            flex-grow: 1;
+            padding: 60px 20px;
             text-align: center;
         }
 
-        .section-light {
-            background-color: var(--bg-light);
-        }
-
-        .section h2 {
+        main.subscription-page h2 {
             font-family: 'Luckiest Guy', cursive;
             font-size: 3em;
             margin-bottom: 50px;
@@ -234,111 +234,122 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .scammer-list-container {
+        .subscription-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch; /* Make cards stretch to same height */
+            margin-top: 30px;
+        }
+
+        .plan-card {
             background-color: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-top: 40px;
-            text-align: left;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .scammer-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
 
-        .scammer-table th,
-        .scammer-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
+        .plan-card.featured {
+            border: 3px solid var(--roblox-purple);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            transform: scale(1.02);
         }
 
-        .scammer-table th {
-            background-color: var(--roblox-blue);
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.9em;
-            letter-spacing: 0.05em;
+        .plan-card.featured:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4);
         }
 
-        .scammer-table tr:hover {
-            background-color: #f5f5f5;
+        .plan-header h3 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2.2em;
+            color: var(--roblox-blue);
+            margin-bottom: 10px;
         }
 
-        .scammer-table tr:nth-child(even) {
-            background-color: #fafafa;
+        .plan-header .price {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3.5em;
+            color: var(--roblox-green);
+            margin-bottom: 20px;
         }
 
-        .status-verified {
+        .plan-header .price span {
+            font-size: 0.5em;
+            vertical-align: super;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .plan-features li::before {
+            content: '✓';
             color: var(--roblox-green);
             font-weight: bold;
+            font-size: 1.2em;
         }
 
-        .status-pending {
-            color: orange;
-            font-weight: bold;
+        .plan-card .btn {
+            width: 100%;
+            padding: 15px 0;
+            margin-top: auto; /* Push button to the bottom */
         }
 
-        .status-rejected {
-            color: var(--roblox-red);
-            font-weight: bold;
+        footer {
+            background-color: var(--roblox-blue);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: auto; /* Push footer to the bottom */
+        }
+
+        footer .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: text-decoration 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
-            .logo {
-                font-size: 2em;
+            main.subscription-page {
+                padding: 40px 10px;
             }
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-                margin-top: 15px;
-            }
-            nav ul li {
-                margin: 5px 0;
-            }
-            .section h2 {
+            main.subscription-page h2 {
                 font-size: 2.5em;
             }
-            .scammer-table,
-            .scammer-table tbody,
-            .scammer-table tr,
-            .scammer-table td,
-            .scammer-table th {
-                display: block;
+            .subscription-plans {
+                grid-template-columns: 1fr;
             }
-
-            .scammer-table thead {
-                display: none;
-            }
-
-            .scammer-table tr {
-                margin-bottom: 15px;
-                border: 1px solid #eee;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
-
-            .scammer-table td {
-                text-align: right;
-                padding-left: 50%;
-                position: relative;
-            }
-
-            .scammer-table td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 15px;
-                width: calc(50% - 30px);
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
-                font-weight: bold;
-                color: #777;
+            .plan-header .price {
+                font-size: 3em;
             }
         }
     </style>
@@ -350,19 +361,20 @@
             <nav>
                 <ul>
                     <li><a href="/index.html">Home</a></li>
-                    <li><a href="/dashboard.html" id="report-nav-btn">Report</a></li> <!-- 'Report' link nu naar dashboard.html -->
+                    <li><a href="/dashboard.html" id="report-nav-btn">Report</a></li>
                     <li><a href="/scammers.html">Lists</a></li>
-                    <li><a href="/subscriptions.html">Subscriptions</a></li>
+                    <li><a href="/subscriptions.html">Subscriptions</a></li> <!-- Nieuwe link toegevoegd -->
                     <li><a href="#">About Us</a></li>
                 </ul>
             </nav>
             <div id="auth-controls">
                 <a href="login.html" class="btn btn-primary" id="login-btn">Login</a>
                 <div class="user-info hidden" id="user-profile-info">
-                    <img src="" alt="Avatar" class="user-avatar" id="user-avatar">
+                    <img src="" alt="Avatar" class="user-avatar" id="user-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/0077FF/FFFFFF?text=R'; console.error('Failed to load user avatar, falling back to placeholder.');">
                     <span class="user-display-name" id="user-display-name"></span>
                     <div class="dropdown-menu" id="user-dropdown-menu">
                         <a href="/my_account.html">My Account</a>
+                        <a href="/my_reports.html">My Reports</a>
                         <div class="divider"></div>
                         <a href="#" class="logout-option" id="logout-btn">Logout</a>
                     </div>
@@ -371,27 +383,61 @@
         </div>
     </header>
 
-    <main>
-        <section id="scammer-list" class="section section-light">
-            <div class="container">
-                <h2>Known Scammers List</h2>
-                <div class="scammer-list-container">
-                    <table class="scammer-table" id="scammer-table">
-                        <thead>
-                            <tr>
-                                <th>Roblox Naam</th>
-                                <th>Scam Type</th>
-                                <!-- <th>Datum Rapportage</th> -->
-                                <!-- <th>Status</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Scammer data will be loaded here by JavaScript -->
-                        </tbody>
-                    </table>
+    <main class="subscription-page">
+        <div class="container">
+            <h2>Choose Your Plan</h2>
+            <div class="subscription-plans">
+                <!-- Basic Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Basic</h3>
+                        <p class="price">€0<span>/mo</span></p>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>Limited Scam Reports</li>
+                            <li>Basic Scammer List Access</li>
+                            <li>Email Support</li>
+                        </ul>
+                    </div>
+                    <a href="#" class="btn btn-primary">Choose Basic</a>
+                </div>
+
+                <!-- Premium Plan (Featured) -->
+                <div class="plan-card featured">
+                    <div class="plan-header">
+                        <h3>Premium</h3>
+                        <p class="price">€9<span>/mo</span></p>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>Unlimited Scam Reports</li>
+                            <li>Advanced Scammer List Access</li>
+                            <li>Priority Email Support</li>
+                            <li>Early Access to New Features</li>
+                        </ul>
+                    </div>
+                    <a href="#" class="btn btn-secondary">Choose Premium</a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Pro</h3>
+                        <p class="price">€19<span>/mo</span></p>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>All Premium Features</li>
+                            <li>Dedicated Account Manager</li>
+                            <li>24/7 Phone Support</li>
+                            <li>Custom Integrations</li>
+                        </ul>
+                    </div>
+                    <a href="#" class="btn btn-primary">Choose Pro</a>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer>
@@ -446,16 +492,9 @@
                         window.location.href = '/index.html'; // Redirect naar homepage na uitloggen
                     });
 
-                    // Update "Report" link in navigation for logged-in users
-                    const reportNavBtn = document.getElementById('report-nav-btn');
-                    if (reportNavBtn) {
-                        reportNavBtn.href = '/dashboard.html';
-                    }
-
                 } else {
                     loginBtn.classList.remove('hidden');
                     userProfileInfo.classList.add('hidden');
-                    // Verwijder de omleiding naar login.html hier. De pagina moet gewoon de login-knop tonen.
                 }
             } catch (error) {
                 console.error('Error checking login status:', error);
@@ -465,34 +504,6 @@
         }
 
         checkLoginStatus(); // Call the function on page load
-
-        // Functie om de scammerlijst te laden
-        async function loadScammerList() {
-            try {
-                const response = await fetch('/api/scammers');
-                const scammers = await response.json();
-                const tableBody = document.querySelector('#scammer-table tbody');
-                tableBody.innerHTML = '';
-
-                scammers.forEach(scammer => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td data-label="Roblox Naam">${scammer.robloxDisplayName}</td>
-                        <td data-label="Scam Type">${scammer.scamType}</td>
-                        <!-- <td data-label="Datum Rapportage">${scammer.reportDate}</td> -->
-                        <!-- <td data-label="Status"><span class="status-${scammer.status}">${scammer.status.toUpperCase()}</span></td> -->
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Fout bij het laden van de scammerlijst:', error);
-                const tableBody = document.querySelector('#scammer-table tbody');
-                tableBody.innerHTML = '<tr><td colspan="2">Kon de scammerlijst niet laden.</td></tr>'; // Aangepast naar 2 kolommen
-            }
-        }
-
-        // Laad de scammerlijst wanneer de pagina geladen is
-        loadScammerList();
     </script>
 </body>
 </html> 
