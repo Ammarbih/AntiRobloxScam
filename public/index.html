@@ -549,10 +549,11 @@
             <div id="auth-controls">
                 <a href="login.html" class="btn btn-primary" id="login-btn">Login</a>
                 <div class="user-info hidden" id="user-profile-info">
-                    <img src="" alt="Avatar" class="user-avatar" id="user-avatar">
+                    <img src="" alt="Avatar" class="user-avatar" id="user-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/0077FF/FFFFFF?text=R'; console.error('Failed to load user avatar, falling back to placeholder.');">
                     <span class="user-display-name" id="user-display-name"></span>
                     <div class="dropdown-menu" id="user-dropdown-menu">
                         <a href="/my_account.html">My Account</a>
+                        <a href="/my_reports.html">My Reports</a>
                         <div class="divider"></div>
                         <a href="#" class="logout-option" id="logout-btn">Logout</a>
                     </div>

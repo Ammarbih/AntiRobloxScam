@@ -286,61 +286,69 @@
             const reportsTableBody = document.getElementById('reportsTableBody');
             const reportStatusFilter = document.getElementById('reportStatusFilter');
 
-            async function fetchReports(status = 'all') {
-                reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Laden van rapportages...</td></tr>';
+            // Functie om rapporten te laden en weer te geven
+            async function loadReports(statusFilter = 'all') {
+                const reportsTableBody = document.getElementById('reportsTableBody');
+                reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Laden van rapporten...</td></tr>';
+
                 try {
-                    const response = await fetch(`/api/admin/reports?status=${status}`);
-                    if (!response.ok) {
-                        if (response.status === 403) {
-                            reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message" style="color: var(--roblox-red);">Toegang geweigerd. U bent geen beheerder.</td></tr>';
-                            return;
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    const response = await fetch(`/api/admin/reports?status=${statusFilter}`);
                     const reports = await response.json();
 
-                    reportsTableBody.innerHTML = ''; // Maak de tabel leeg
+                    reportsTableBody.innerHTML = ''; // Leeg de tabel body
 
                     if (reports.length === 0) {
-                        reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Geen rapportages gevonden voor de geselecteerde status.</td></tr>';
+                        reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message">Geen rapporten gevonden met deze status.</td></tr>';
                         return;
                     }
 
                     reports.forEach(report => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${report.id}</td>
-                            <td>${report.reportedBy}</td>
-                            <td>${report.scammerUsername}</td>
-                            <td>${report.gameScammed || 'N/A'}</td>
-                            <td>${report.reportDetails}</td>
-                            <td>${new Date(report.reportDate).toLocaleDateString()}</td>
-                            <td class="status-${report.status}">${report.status}</td>
-                            <td>${report.mediaEvidence ? `<a href="${report.mediaEvidence}" target="_blank">Bekijk Media</a>` : 'Geen'}</td>
-                            <td class="report-actions">
-                                ${report.status === 'pending' ? `<button class="btn-resolve" data-id="${report.id}">Afhandelen</button>` : ''}
-                                ${report.status === 'pending' ? `<button class="btn-dismiss" data-id="${report.id}">Afkeuren</button>` : ''}
-                            </td>
+                        const row = `
+                            <tr>
+                                <td>${report.id}</td>
+                                <td>${report.reportedByName || report.reportedBy}</td>
+                                <td>${report.scammerUsername}</td>
+                                <td>${report.gameScammed}</td>
+                                <td>${report.reportDetails}</td>
+                                <td>${report.mediaEvidence ? `<a href="${report.mediaEvidence}" target="_blank">Bekijk Media</a>` : 'Geen'}</td>
+                                <td>${new Date(report.reportDate).toLocaleDateString()}</td>
+                                <td class="status-${report.status}">${report.status}</td>
+                                <td class="report-actions">
+                                    ${report.status === 'pending' ? `<button class="btn-resolve" data-id="${report.id}">Afhandelen</button>` : ''}
+                                    ${report.status === 'pending' ? `<button class="btn-dismiss" data-id="${report.id}">Afwijzen</button>` : ''}
+                                </td>
+                            </tr>
                         `;
-                        reportsTableBody.appendChild(row);
+                        reportsTableBody.insertAdjacentHTML('beforeend', row);
                     });
 
-                    attachEventListeners();
+                    // Voeg event listeners toe aan de knoppen
+                    document.querySelectorAll('.btn-resolve').forEach(button => {
+                        button.addEventListener('click', (e) => updateReportStatus(e.target.dataset.id, 'resolved'));
+                    });
+
+                    document.querySelectorAll('.btn-dismiss').forEach(button => {
+                        button.addEventListener('click', (e) => updateReportStatus(e.target.dataset.id, 'dismissed'));
+                    });
 
                 } catch (error) {
-                    console.error('Fout bij ophalen rapportages:', error);
-                    reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message" style="color: var(--roblox-red);">Fout bij laden rapportages.</td></tr>';
+                    console.error('Fout bij het laden van rapporten:', error);
+                    reportsTableBody.innerHTML = '<tr><td colspan="8" class="no-reports-message" style="color: red;">Fout bij het laden van rapporten. Probeer opnieuw.</td></tr>';
                 }
             }
 
-            async function updateReportStatus(reportId, newStatus) {
+            // Functie om de status van een rapport bij te werken
+            async function updateReportStatus(reportId, status) {
+                if (!confirm(`Weet u zeker dat u rapport ${reportId} wilt instellen op '${status}'?`)) {
+                    return;
+                }
                 try {
                     const response = await fetch(`/api/admin/reports/${reportId}/status`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ status: newStatus })
+                        body: JSON.stringify({ status: status })
                     });
 
                     if (!response.ok) {
@@ -349,7 +357,7 @@
 
                     const result = await response.json();
                     console.log(result.message);
-                    fetchReports(reportStatusFilter.value); // Ververs de lijst na update
+                    loadReports(reportStatusFilter.value); // Ververs de lijst na update
 
                 } catch (error) {
                     console.error('Fout bij bijwerken rapportagestatus:', error);
@@ -357,28 +365,12 @@
                 }
             }
 
-            function attachEventListeners() {
-                document.querySelectorAll('.btn-resolve').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const reportId = e.target.dataset.id;
-                        updateReportStatus(reportId, 'resolved');
-                    });
-                });
-
-                document.querySelectorAll('.btn-dismiss').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const reportId = e.target.dataset.id;
-                        updateReportStatus(reportId, 'dismissed');
-                    });
-                });
-            }
-
             reportStatusFilter.addEventListener('change', (event) => {
-                fetchReports(event.target.value);
+                loadReports(event.target.value);
             });
 
             // Initiële laad van rapportages
-            fetchReports(reportStatusFilter.value);
+            loadReports(reportStatusFilter.value);
         });
     </script>
 </body>

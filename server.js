@@ -206,7 +206,7 @@ app.post('/api/reports', upload.single('mediaEvidence'), (req, res) => { // Gebr
     }
 
     const { scammerUsername, reportDetails, gameScammed } = req.body; // scamType is verwijderd
-    const reportedBy = req.user.displayName || req.user.email;
+    const reportedBy = req.user.googleId; // Gebruik Google ID voor de koppeling
     const mediaEvidencePath = req.file ? '/uploads/' + req.file.filename : null; // Pad naar geüploade bestand
 
     if (!scammerUsername || !reportDetails || !gameScammed) {
@@ -227,6 +227,23 @@ app.post('/api/reports', upload.single('mediaEvidence'), (req, res) => { // Gebr
             res.status(201).json({ message: 'Rapportage succesvol ingediend! We zullen dit zo snel mogelijk beoordelen.', reportId: this.lastID });
         }
     );
+});
+
+// NIEUW: Endpoint om rapportages van de ingelogde gebruiker op te halen
+app.get('/api/my-reports', (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: 'U moet ingelogd zijn om uw rapportages te bekijken.' });
+    }
+
+    const userGoogleId = req.user.googleId;
+
+    db.all(`SELECT * FROM reports WHERE reportedBy = ? ORDER BY reportDate DESC`, [userGoogleId], (err, rows) => {
+        if (err) {
+            console.error('Fout bij ophalen gebruikersrapporten:', err.message);
+            return res.status(500).json({ message: 'Er is een fout opgetreden bij het ophalen van uw rapportages.' });
+        }
+        res.json(rows);
+    });
 });
 
 // Logout endpoint
@@ -311,15 +328,21 @@ app.get('/api/admin/recent-activity', ensureAdmin, (req, res) => {
 // NIEUW: API endpoint om alle rapportages op te halen voor de admin
 app.get('/api/admin/reports', ensureAdmin, (req, res) => {
     const statusFilter = req.query.status; // Kan 'all', 'pending', 'resolved', 'dismissed' zijn
-    let query = `SELECT * FROM reports`;
+    let query = `
+        SELECT
+            r.id, r.scammerUsername, r.gameScammed, r.reportDetails, r.mediaEvidence, r.reportDate, r.status,
+            u.displayName AS reportedByName
+        FROM reports r
+        JOIN users u ON r.reportedBy = u.googleId
+    `;
     const params = [];
 
     if (statusFilter && statusFilter !== 'all') {
-        query += ` WHERE status = ?`;
+        query += ` WHERE r.status = ?`;
         params.push(statusFilter);
     }
 
-    query += ` ORDER BY reportDate DESC`;
+    query += ` ORDER BY r.reportDate DESC`;
 
     db.all(query, params, (err, rows) => {
         if (err) {
