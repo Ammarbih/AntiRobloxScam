@@ -3,7 +3,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose(); // SQLite3 importeren
+const { Pool } = require('pg'); // Importeer pg
 const multer = require('multer'); // Importeer multer
 const path = require('path'); // Nodig voor paden
 require('dotenv').config();
@@ -13,43 +13,55 @@ console.log('Loaded GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
 const app = express();
 
-// SQLite database initialiseren
-const db = new sqlite3.Database('./database.db', (err) => {
+// PostgreSQL database initialiseren met Pool voor connection management
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+});
+
+// Test de databaseverbinding
+pool.query('SELECT NOW()', (err, queryResult) => {
     if (err) {
-        console.error('Fout bij openen database:', err.message);
+        console.error('Fout bij verbinden met PostgreSQL database:', err.stack);
     } else {
-        console.log('Verbonden met de SQLite database.');
+        console.log('Verbonden met PostgreSQL database op:', queryResult.rows[0].now);
         // Creëer tabellen als ze niet bestaan
-        db.serialize(() => {
-            db.run(`CREATE TABLE IF NOT EXISTS users (
+        pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
                 id TEXT PRIMARY KEY,
                 googleId TEXT UNIQUE,
-                displayName TEXT,
+                displayname TEXT,
                 email TEXT UNIQUE,
                 avatar TEXT,
-                isAdmin INTEGER DEFAULT 0
-            )`);
-
-            db.run(`CREATE TABLE IF NOT EXISTS scammers (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                isadmin INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS scammers (
+                id SERIAL PRIMARY KEY,
                 robloxUsername TEXT UNIQUE NOT NULL,
                 scamType TEXT,
                 description TEXT,
                 reportedBy TEXT,
-                reportDate TEXT DEFAULT CURRENT_TIMESTAMP
-            )`);
-
-            db.run(`CREATE TABLE IF NOT EXISTS reports (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                reportDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS reports (
+                id SERIAL PRIMARY KEY,
                 reportedBy TEXT,
                 scammerUsername TEXT NOT NULL,
                 gameScammed TEXT,
                 reportDetails TEXT NOT NULL,
-                mediaEvidence TEXT, -- Kolom voor bestandspad of URL
-                reportDate TEXT DEFAULT CURRENT_TIMESTAMP,
+                mediaEvidence TEXT,
+                reportDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 status TEXT DEFAULT 'pending'
-            )`);
-            console.log('Database tabellen gecontroleerd/aangemaakt.');
+            );
+        `, (err, createTableResult) => {
+            if (err) {
+                console.error('Fout bij creëren tabellen:', err.stack);
+            } else {
+                console.log('Database tabellen gecontroleerd/aangemaakt.');
+            }
         });
     }
 });
@@ -60,7 +72,7 @@ app.use(express.static('pictures')); // Serveer ook de 'pictures' map
 
 // CORS Middleware
 app.use(cors({
-    origin: 'http://localhost:5000', // De server serveert nu zelf de frontend, dus de origin is ook de server zelf
+    origin: 'https://anti-roblox-scam-68023991678.europe-west1.run.app', // De server serveert nu zelf de frontend, dus de origin is ook de server zelf
     credentials: true
 }));
 
@@ -82,7 +94,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/auth/google/callback"
+    callbackURL: "https://anti-roblox-scam-68023991678.europe-west1.run.app/auth/google/callback"
 },
 (accessToken, refreshToken, profile, done) => {
     console.log('Google OAuth authentication successful.');
@@ -91,33 +103,35 @@ passport.use(new GoogleStrategy({
     const userEmail = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
     const isAdmin = (userEmail === process.env.ADMIN_EMAIL) ? 1 : 0;
 
-    db.get(`SELECT * FROM users WHERE googleId = ?`, [profile.id], (err, user) => {
+    pool.query(`SELECT * FROM users WHERE googleId = $1`, [profile.id], (err, userQueryResult) => {
         if (err) return done(err);
 
-        if (user) {
+        if (userQueryResult.rows.length > 0) {
             // Gebruiker bestaat, update informatie
-            db.run(`UPDATE users SET displayName = ?, email = ?, avatar = ?, isAdmin = ? WHERE googleId = ?`,
+            pool.query(`UPDATE users SET displayname = $1, email = $2, avatar = $3, isadmin = $4 WHERE googleId = $5`,
                 [profile.displayName, userEmail, profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null, isAdmin, profile.id],
-                function (err) {
+                (err, updateResult) => {
                     if (err) return done(err);
                     console.log('Gebruiker bijgewerkt in DB:', profile.displayName);
                     // Haal de bijgewerkte gebruiker op om zeker te zijn dat we de isAdmin flag krijgen
-                    db.get(`SELECT * FROM users WHERE googleId = ?`, [profile.id], (err, updatedUser) => {
+                    pool.query(`SELECT * FROM users WHERE googleId = $1`, [profile.id], (err, updatedUserQueryResult) => {
                         if (err) return done(err);
-                        done(null, updatedUser);
+                        console.log('GoogleStrategy: updatedUser before done:', updatedUserQueryResult.rows[0]);
+                        done(null, updatedUserQueryResult.rows[0]);
                     });
                 });
         } else {
             // Nieuwe gebruiker, voeg toe aan database
-            db.run(`INSERT INTO users (id, googleId, displayName, email, avatar, isAdmin) VALUES (?, ?, ?, ?, ?, ?)`,
+            pool.query(`INSERT INTO users (id, googleId, displayname, email, avatar, isadmin) VALUES ($1, $2, $3, $4, $5, $6)`,
                 [profile.id, profile.id, profile.displayName, userEmail, profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null, isAdmin],
-                function (err) {
+                (err, insertResult) => {
                     if (err) return done(err);
                     console.log('Nieuwe gebruiker toegevoegd aan DB:', profile.displayName);
                     // Haal de zojuist toegevoegde gebruiker op
-                    db.get(`SELECT * FROM users WHERE googleId = ?`, [profile.id], (err, newUser) => {
+                    pool.query(`SELECT * FROM users WHERE googleId = $1`, [profile.id], (err, newuserQueryResult) => {
                         if (err) return done(err);
-                        done(null, newUser);
+                        console.log('GoogleStrategy: newUser before done:', newuserQueryResult.rows[0]);
+                        done(null, newuserQueryResult.rows[0]);
                     });
                 });
         }
@@ -127,16 +141,17 @@ passport.use(new GoogleStrategy({
 
 // Serialize user into the session
 passport.serializeUser((user, done) => {
-    // console.log('Serializing user:', user.id);
-    done(null, user.googleId); // Sla alleen de googleId op
+    console.log('Serializing user:', user); // Log het user object hier
+    done(null, user.googleid); // Gebruik user.googleid (kleine letters)
 });
 
 // Deserialize user from the session
 passport.deserializeUser((googleId, done) => {
-    // console.log('Deserializing user:', googleId);
-    db.get(`SELECT * FROM users WHERE googleId = ?`, [googleId], (err, user) => {
+    console.log('Deserializing googleId:', googleId); // Log de googleId hier
+    pool.query(`SELECT * FROM users WHERE googleId = $1`, [googleId], (err, userQueryResult) => {
         if (err) return done(err);
-        done(null, user); // Stuur het volledige gebruikersobject door
+        console.log('Deserialized user from DB:', userQueryResult.rows[0]); // Log de gedeserialiseerde gebruiker hier
+        done(null, userQueryResult.rows[0]); // Stuur het volledige gebruikersobject door
     });
 });
 
@@ -158,10 +173,10 @@ app.get('/auth/google/callback',
     (req, res) => {
         console.log('Google OAuth callback. Session returnTo:', req.session.returnTo);
         const adminEmail = process.env.ADMIN_EMAIL; // Admin email to check against
-        const userEmail = req.user.emails && req.user.emails.length > 0 ? req.user.emails[0].value : null;
+        const userEmail = req.user.email; // Gebruik req.user.email
 
-        // Gebruik req.user.isAdmin van de gedeserialiseerde gebruiker
-        if (req.user && req.user.isAdmin === 1) {
+        // Gebruik req.user.isadmin van de gedeserialiseerde gebruiker
+        if (req.user && req.user.isadmin === 1) {
             console.log('Admin user logged in. Redirecting to admin dashboard.');
             res.redirect('/admin_dashboard.html');
         } else {
@@ -178,9 +193,9 @@ app.get('/api/user', (req, res) => {
         res.json({
             loggedIn: true,
             user: {
-                displayName: req.user.displayName,
-                email: req.user.emails && req.user.emails.length > 0 ? req.user.emails[0].value : null,
-                avatar: req.user.photos && req.user.photos.length > 0 ? req.user.photos[0].value : null
+                displayname: req.user.displayname,
+                email: req.user.email,
+                avatar: req.user.avatar
             }
         });
     } else {
@@ -206,7 +221,7 @@ app.post('/api/reports', upload.single('mediaEvidence'), (req, res) => { // Gebr
     }
 
     const { scammerUsername, reportDetails, gameScammed } = req.body; // scamType is verwijderd
-    const reportedBy = req.user.googleId; // Gebruik Google ID voor de koppeling
+    const reportedBy = req.user.displayname; // Gebruik nu displayname in plaats van googleid
     const mediaEvidencePath = req.file ? '/uploads/' + req.file.filename : null; // Pad naar geüploade bestand
 
     if (!scammerUsername || !reportDetails || !gameScammed) {
@@ -214,17 +229,17 @@ app.post('/api/reports', upload.single('mediaEvidence'), (req, res) => { // Gebr
         return res.status(400).json({ message: 'De velden Roblox Gebruikersnaam, Game en Details zijn verplicht.' });
     }
 
-    db.run(
-        `INSERT INTO reports (reportedBy, scammerUsername, reportDetails, gameScammed, mediaEvidence, status) VALUES (?, ?, ?, ?, ?, ?)`,
-        [reportedBy, scammerUsername, reportDetails, gameScammed, mediaEvidencePath, 'pending'], // mediaEvidencePath opslaan
-        function (err) {
+    pool.query(
+        `INSERT INTO reports (reportedBy, scammerUsername, reportDetails, gameScammed, mediaEvidence, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        [reportedBy, scammerUsername, reportDetails, gameScammed, mediaEvidencePath, 'pending'],
+        (err, result) => {
             if (err) {
                 console.error('Fout bij opslaan rapportage:', err.message);
                 console.error('Ontvangen rapportage data:', req.body);
                 console.error('Bestand:', req.file);
                 return res.status(500).json({ message: 'Er is een fout opgetreden bij het indienen van de rapportage.' });
             }
-            res.status(201).json({ message: 'Rapportage succesvol ingediend! We zullen dit zo snel mogelijk beoordelen.', reportId: this.lastID });
+            res.status(201).json({ message: 'Rapportage succesvol ingediend! We zullen dit zo snel mogelijk beoordelen.', reportId: result.rows[0].id });
         }
     );
 });
@@ -235,14 +250,14 @@ app.get('/api/my-reports', (req, res) => {
         return res.status(401).json({ message: 'U moet ingelogd zijn om uw rapportages te bekijken.' });
     }
 
-    const userGoogleId = req.user.googleId;
+    const userDisplayName = req.user.displayname; // Gebruik displayname om te filteren
 
-    db.all(`SELECT * FROM reports WHERE reportedBy = ? ORDER BY reportDate DESC`, [userGoogleId], (err, rows) => {
+    pool.query(`SELECT id, reportedBy AS reportedByName, scammerUsername, gameScammed, reportDetails, mediaEvidence, reportDate, status FROM reports WHERE reportedBy = $1 ORDER BY reportDate DESC`, [userDisplayName], (err, queryResult) => {
         if (err) {
             console.error('Fout bij ophalen gebruikersrapporten:', err.message);
             return res.status(500).json({ message: 'Er is een fout opgetreden bij het ophalen van uw rapportages.' });
         }
-        res.json(rows);
+        res.json(queryResult.rows);
     });
 });
 
@@ -262,7 +277,7 @@ app.get('/auth/logout', (req, res, next) => {
 
 // Middleware om te controleren of de gebruiker is ingelogd en een admin is
 function ensureAdmin(req, res, next) {
-    if (req.isAuthenticated() && req.user && req.user.isAdmin === 1) {
+    if (req.isAuthenticated() && req.user && req.user.isadmin === 1) {
         return next();
     }
     console.log('Toegang geweigerd: Niet-admin probeert toegang te krijgen tot admin-route.');
@@ -281,24 +296,24 @@ app.get('/api/admin/dashboard-data', ensureAdmin, (req, res) => {
     const data = {};
 
     // Totaal aantal gebruikers
-    db.get("SELECT COUNT(*) AS totalUsers FROM users", (err, row) => {
-        if (err) { console.error(err.message); return res.status(500).send('Server error'); }
-        data.totalUsers = row.totalUsers;
+    pool.query("SELECT COUNT(*) AS totalUsers FROM users", (err, countUsersResult) => {
+        if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
+        data.totalusers = countUsersResult.rows[0].totalusers; // Zowel links als rechts kleine letters
 
         // Actieve scammers
-        db.get("SELECT COUNT(*) AS activeScammers FROM scammers", (err, row) => {
-            if (err) { console.error(err.message); return res.status(500).send('Server error'); }
-            data.activeScammers = row.activeScammers;
+        pool.query("SELECT COUNT(*) AS activeScammers FROM scammers", (err, countScammersResult) => {
+            if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
+            data.activescammers = countScammersResult.rows[0].activescammers; // Zowel links als rechts kleine letters
 
             // Nieuwe rapportages (pending)
-            db.get("SELECT COUNT(*) AS newReports FROM reports WHERE status = 'pending'", (err, row) => {
-                if (err) { console.error(err.message); return res.status(500).send('Server error'); }
-                data.newReports = row.newReports;
+            pool.query("SELECT COUNT(*) AS newReports FROM reports WHERE status = 'pending'", (err, countNewReportsResult) => {
+                if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
+                data.newreports = countNewReportsResult.rows[0].newreports; // Zowel links als rechts kleine letters
 
                 // Afgehandelde rapportages (resolved)
-                db.get("SELECT COUNT(*) AS resolvedReports FROM reports WHERE status = 'resolved'", (err, row) => {
-                    if (err) { console.error(err.message); return res.status(500).send('Server error'); }
-                    data.resolvedReports = row.resolvedReports;
+                pool.query("SELECT COUNT(*) AS resolvedReports FROM reports WHERE status = 'resolved'", (err, countResolvedReportsResult) => {
+                    if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
+                    data.resolvedreports = countResolvedReportsResult.rows[0].resolvedreports; // Zowel links als rechts kleine letters
 
                     res.json(data);
                 });
@@ -312,16 +327,16 @@ app.get('/api/admin/recent-activity', ensureAdmin, (req, res) => {
     const query = `
         SELECT 'report' as type, reportDate as timestamp, 'Gebruiker ' || reportedBy || ' heeft een nieuw rapport ingediend voor ' || scammerUsername || '.' as activity, status FROM reports
         UNION ALL
-        SELECT 'user' as type, '_rowid_' as timestamp, 'Nieuwe gebruiker aangemeld: ' || displayName as activity, NULL as status FROM users
+        SELECT 'user' as type, CURRENT_TIMESTAMP as timestamp, 'Nieuwe gebruiker aangemeld: ' || displayname as activity, NULL as status FROM users
         UNION ALL
         SELECT 'scammer' as type, reportDate as timestamp, 'Nieuwe scammer toegevoegd: ' || robloxUsername as activity, NULL as status FROM scammers
         ORDER BY timestamp DESC
         LIMIT 10
     `;
 
-    db.all(query, [], (err, rows) => {
-        if (err) { console.error(err.message); return res.status(500).send('Server error'); }
-        res.json(rows);
+    pool.query(query, [], (err, activityQueryResult) => {
+        if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
+        res.json(activityQueryResult.rows);
     });
 });
 
@@ -330,26 +345,25 @@ app.get('/api/admin/reports', ensureAdmin, (req, res) => {
     const statusFilter = req.query.status; // Kan 'all', 'pending', 'resolved', 'dismissed' zijn
     let query = `
         SELECT
-            r.id, r.scammerUsername, r.gameScammed, r.reportDetails, r.mediaEvidence, r.reportDate, r.status,
-            u.displayName AS reportedByName
-        FROM reports r
-        JOIN users u ON r.reportedBy = u.googleId
+            id, scammerUsername, gameScammed, reportDetails, mediaEvidence, reportDate, status,
+            reportedBy AS reportedByName
+        FROM reports
     `;
     const params = [];
 
     if (statusFilter && statusFilter !== 'all') {
-        query += ` WHERE r.status = ?`;
+        query += ` WHERE status = $1`;
         params.push(statusFilter);
     }
 
-    query += ` ORDER BY r.reportDate DESC`;
+    query += ` ORDER BY reportDate DESC`;
 
-    db.all(query, params, (err, rows) => {
+    pool.query(query, params, (err, adminReportsQueryResult) => {
         if (err) {
-            console.error('Fout bij ophalen rapportages voor admin:', err.message);
+            console.error('Fout bij ophalen rapportages voor admin:', err.stack);
             return res.status(500).json({ message: 'Fout bij laden rapportages.' });
         }
-        res.json(rows);
+        res.json(adminReportsQueryResult.rows);
     });
 });
 
@@ -362,15 +376,15 @@ app.put('/api/admin/reports/:id/status', ensureAdmin, (req, res) => {
         return res.status(400).json({ message: 'Ongeldige status opgegeven.' });
     }
 
-    db.run(
-        `UPDATE reports SET status = ? WHERE id = ?`,
+    pool.query(
+        `UPDATE reports SET status = $1 WHERE id = $2`,
         [status, reportId],
-        function (err) {
+        (err, result) => {
             if (err) {
-                console.error('Fout bij bijwerken rapportagestatus:', err.message);
+                console.error('Fout bij bijwerken rapportagestatus:', err.stack);
                 return res.status(500).json({ message: 'Fout bij bijwerken van de rapportagestatus.' });
             }
-            if (this.changes === 0) {
+            if (result.rowCount === 0) {
                 return res.status(404).json({ message: 'Rapportage niet gevonden.' });
             }
             res.json({ message: `Rapportage ${reportId} succesvol bijgewerkt naar status ${status}.` });
@@ -384,5 +398,5 @@ app.get('/', (req, res) => {
 });
 
 // Stel de poort in
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server draait op poort ${PORT}`)); 

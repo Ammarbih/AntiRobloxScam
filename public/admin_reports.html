@@ -306,12 +306,12 @@
                         const row = `
                             <tr>
                                 <td>${report.id}</td>
-                                <td>${report.reportedByName || report.reportedBy}</td>
-                                <td>${report.scammerUsername}</td>
-                                <td>${report.gameScammed}</td>
-                                <td>${report.reportDetails}</td>
-                                <td>${report.mediaEvidence ? `<a href="${report.mediaEvidence}" target="_blank">Bekijk Media</a>` : 'Geen'}</td>
-                                <td>${new Date(report.reportDate).toLocaleDateString()}</td>
+                                <td>${report.reportedbyname || report.reportedby}</td>
+                                <td>${report.scammerusername}</td>
+                                <td>${report.gamescammed}</td>
+                                <td>${report.reportdetails}</td>
+                                <td>${report.mediaevidence ? `<a href="${report.mediaevidence}" target="_blank">Bekijk Media</a>` : 'Geen'}</td>
+                                <td>${new Date(report.reportdate).toLocaleDateString()}</td>
                                 <td class="status-${report.status}">${report.status}</td>
                                 <td class="report-actions">
                                     ${report.status === 'pending' ? `<button class="btn-resolve" data-id="${report.id}">Afhandelen</button>` : ''}

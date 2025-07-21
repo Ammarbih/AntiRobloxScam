@@ -913,7 +913,7 @@
                     } else {
                         userAvatar.src = 'https://via.placeholder.com/40/0077FF/FFFFFF?text=R';
                     }
-                    userDisplayName.textContent = data.user.displayName || data.user.email || 'User';
+                    userDisplayName.textContent = data.user.displayname || data.user.email || 'User';
 
                     loginBtn.classList.add('hidden');
                     userProfileInfo.classList.remove('hidden');
@@ -1094,6 +1094,7 @@
             formData.append('scamType', 'Niet geselecteerd'); // Behoud deze voor compatibiliteit, hoewel niet in DB
 
             try {
+                console.log('Attempting to submit report...');
                 const response = await fetch('/api/reports', {
                     method: 'POST',
                     // GEEN 'Content-Type': 'application/json' header instellen bij FormData
@@ -1102,17 +1103,21 @@
 
                 const result = await response.json();
 
+                console.log('Server response ok:', response.ok);
+                console.log('Server response status:', response.status);
+                console.log('Server response body (result):', result);
+
                 if (response.ok) {
                     console.log('Report submitted successfully:', result);
                     modalSteps[currentStep].classList.add('exit-left');
                     currentStep++;
                     showStep(currentStep); // Show thank you step
                 } else {
-                    console.error('Error submitting report:', result.message);
+                    console.error('Error submitting report (server responded with error):', result.message);
                     alert('Fout bij indienen rapportage: ' + (result.message || 'Onbekende fout'));
                 }
             } catch (error) {
-                console.error('Network error submitting report:', error);
+                console.error('Network error submitting report (fetch failed):', error);
                 alert('Netwerkfout: Kan rapportage niet indienen.');
             }
         });

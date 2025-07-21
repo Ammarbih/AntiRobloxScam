@@ -181,16 +181,18 @@
                     return;
                 }
 
-                reports.forEach(report => {
+                reports.forEach((report, index) => {
+                    console.log('Processing report:', report); // Voeg deze log toe
                     const reportItem = document.createElement('div');
                     reportItem.classList.add('report-item');
                     reportItem.innerHTML = `
-                        <h3>Report for ${report.scammerUsername}</h3>
-                        <p><strong>Game:</strong> ${report.gameScammed}</p>
-                        <p><strong>Details:</strong> ${report.reportDetails}</p>
-                        <p><strong>Submitted On:</strong> ${new Date(report.reportDate).toLocaleDateString()}</p>
+                        <h3>Report #${report.id}</h3>
+                        <p><strong>Scammer Username:</strong> ${report.scammerusername}</p>
+                        <p><strong>Game:</strong> ${report.gamescammed}</p>
+                        <p><strong>Details:</strong> ${report.reportdetails}</p>
+                        <p><strong>Submitted On:</strong> ${new Date(report.reportdate).toLocaleDateString()}</p>
                         <p><strong>Status:</strong> <span class="status ${report.status}">${report.status}</span></p>
-                        ${report.mediaEvidence ? `<p><a href="${report.mediaEvidence}" target="_blank">View Evidence</a></p>` : ''}
+                        ${report.mediaevidence ? `<p><a href="${report.mediaevidence}" target="_blank">View Evidence</a></p>` : ''}
                     `;
                     reportsListDiv.appendChild(reportItem);
                 });

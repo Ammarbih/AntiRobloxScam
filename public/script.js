@@ -3,23 +3,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchDashboardStats() {
         try {
             const response = await fetch('/api/admin/dashboard-data');
+            console.log('Dashboard data response status:', response.status);
             if (!response.ok) {
                 if (response.status === 403) {
                     console.error('Toegang geweigerd: U bent geen beheerder.');
-                    // Optioneel: toon een melding aan de gebruiker
                     return;
                 }
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
             }
             const data = await response.json();
+            console.log('Received dashboard data:', data);
 
-            document.getElementById('totalUsers').textContent = data.totalUsers.toLocaleString();
-            document.getElementById('activeScammers').textContent = data.activeScammers.toLocaleString();
-            document.getElementById('newReports').textContent = data.newReports.toLocaleString();
-            document.getElementById('resolvedReports').textContent = data.resolvedReports.toLocaleString();
+            // Controleer of de data objecten bevat en wijs ze toe
+            if (data && typeof data.totalusers === 'number') {
+                document.getElementById('totalUsers').textContent = data.totalusers.toLocaleString();
+            } else {
+                document.getElementById('totalUsers').textContent = 'N/A';
+                console.warn('totalUsers data missing or invalid.', data);
+            }
+            if (data && typeof data.activescammers === 'number') {
+                document.getElementById('activeScammers').textContent = data.activescammers.toLocaleString();
+            } else {
+                document.getElementById('activeScammers').textContent = 'N/A';
+                console.warn('activeScammers data missing or invalid.', data);
+            }
+            if (data && typeof data.newreports === 'number') {
+                document.getElementById('newReports').textContent = data.newreports.toLocaleString();
+            } else {
+                document.getElementById('newReports').textContent = 'N/A';
+                console.warn('newReports data missing or invalid.', data);
+            }
+            if (data && typeof data.resolvedreports === 'number') {
+                document.getElementById('resolvedReports').textContent = data.resolvedreports.toLocaleString();
+            } else {
+                document.getElementById('resolvedReports').textContent = 'N/A';
+                console.warn('resolvedReports data missing or invalid.', data);
+            }
 
         } catch (error) {
             console.error('Fout bij ophalen dashboard statistieken:', error);
+            document.getElementById('totalUsers').textContent = 'Fout';
+            document.getElementById('activeScammers').textContent = 'Fout';
+            document.getElementById('newReports').textContent = 'Fout';
+            document.getElementById('resolvedReports').textContent = 'Fout';
         }
     }
 
@@ -29,7 +55,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch('/api/admin/recent-activity');
             if (!response.ok) {
                 if (response.status === 403) {
-                    // Al afgehandeld in fetchDashboardStats, maar hier ook voor de zekerheid
                     return;
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);
