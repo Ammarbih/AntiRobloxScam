@@ -298,22 +298,22 @@ app.get('/api/admin/dashboard-data', ensureAdmin, (req, res) => {
     // Totaal aantal gebruikers
     pool.query("SELECT COUNT(*) AS totalUsers FROM users", (err, countUsersResult) => {
         if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-        data.totalusers = countUsersResult.rows[0].totalusers; // Zowel links als rechts kleine letters
+        data.totalusers = parseInt(countUsersResult.rows[0].totalusers || 0); // Zorg ervoor dat het een nummer is
 
         // Actieve scammers
         pool.query("SELECT COUNT(*) AS activeScammers FROM scammers", (err, countScammersResult) => {
             if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-            data.activescammers = countScammersResult.rows[0].activescammers; // Zowel links als rechts kleine letters
+            data.activescammers = parseInt(countScammersResult.rows[0].activescammers || 0); // Zorg ervoor dat het een nummer is
 
             // Nieuwe rapportages (pending)
             pool.query("SELECT COUNT(*) AS newReports FROM reports WHERE status = 'pending'", (err, countNewReportsResult) => {
                 if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-                data.newreports = countNewReportsResult.rows[0].newreports; // Zowel links als rechts kleine letters
+                data.newreports = parseInt(countNewReportsResult.rows[0].newreports || 0); // Zorg ervoor dat het een nummer is
 
                 // Afgehandelde rapportages (resolved)
                 pool.query("SELECT COUNT(*) AS resolvedReports FROM reports WHERE status = 'resolved'", (err, countResolvedReportsResult) => {
                     if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-                    data.resolvedreports = countResolvedReportsResult.rows[0].resolvedreports; // Zowel links als rechts kleine letters
+                    data.resolvedreports = parseInt(countResolvedReportsResult.rows[0].resolvedreports || 0); // Zorg ervoor dat het een nummer is
 
                     res.json(data);
                 });
