@@ -298,23 +298,24 @@ app.get('/api/admin/dashboard-data', ensureAdmin, (req, res) => {
     // Totaal aantal gebruikers
     pool.query("SELECT COUNT(*) AS totalUsers FROM users", (err, countUsersResult) => {
         if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-        data.totalusers = parseInt(countUsersResult.rows[0].totalusers || 0); // Zorg ervoor dat het een nummer is
+        data.totalusers = parseInt(countUsersResult.rows[0].totalusers); // Verwijder || 0 om zeker te zijn van parsing
 
         // Actieve scammers
         pool.query("SELECT COUNT(*) AS activeScammers FROM scammers", (err, countScammersResult) => {
             if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-            data.activescammers = parseInt(countScammersResult.rows[0].activescammers || 0); // Zorg ervoor dat het een nummer is
+            data.activescammers = parseInt(countScammersResult.rows[0].activescammers); // Verwijder || 0
 
             // Nieuwe rapportages (pending)
             pool.query("SELECT COUNT(*) AS newReports FROM reports WHERE status = 'pending'", (err, countNewReportsResult) => {
                 if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-                data.newreports = parseInt(countNewReportsResult.rows[0].newreports || 0); // Zorg ervoor dat het een nummer is
+                data.newreports = parseInt(countNewReportsResult.rows[0].newreports); // Verwijder || 0
 
                 // Afgehandelde rapportages (resolved)
                 pool.query("SELECT COUNT(*) AS resolvedReports FROM reports WHERE status = 'resolved'", (err, countResolvedReportsResult) => {
                     if (err) { console.error(err.stack); return res.status(500).send('Server error'); }
-                    data.resolvedreports = parseInt(countResolvedReportsResult.rows[0].resolvedreports || 0); // Zorg ervoor dat het een nummer is
+                    data.resolvedreports = parseInt(countResolvedReportsResult.rows[0].resolvedreports); // Verwijder || 0
 
+                    console.log('Sending dashboard data:', data); // Voeg deze log toe
                     res.json(data);
                 });
             });
