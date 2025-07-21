@@ -8,4 +8,4 @@ steps:
 images:
 - 'gcr.io/$PROJECT_ID/anti-roblox-scam' 
 options:
-  logsBucket: "gs://jouw-unieke-bucket-naam"
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
