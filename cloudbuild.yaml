@@ -7,3 +7,5 @@ steps:
   args: ['run', 'deploy', 'anti-roblox-scam', '--image', 'gcr.io/$PROJECT_ID/anti-roblox-scam', '--region', 'europe-west1', '--platform', 'managed', '--allow-unauthenticated']
 images:
 - 'gcr.io/$PROJECT_ID/anti-roblox-scam' 
+options:
+  logsBucket: "gs://jouw-unieke-bucket-naam"
