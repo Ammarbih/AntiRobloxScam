@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Scammers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --roblox-blue: #0077FF;
+            --roblox-purple: #8B5CF6;
+            --roblox-green: #22C55E;
+            --roblox-red: #EF4444;
+            --text-dark: #333333;
+            --text-light: #f9fafb;
+            --bg-light: #f9fafb;
+            --bg-gradient-start: #DBEAFE; /* Light blue */
+            --bg-gradient-end: #EDE9FE; /* Light purple */
+            --card-bg: #FFFFFF;
+            --border-light: #E5E7EB;
+            --shadow-light: rgba(0,0,0,0.05);
+            --shadow-medium: rgba(0,0,0,0.1);
+            --shadow-strong: rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            color: var(--roblox-blue);
+            text-shadow: 2px 2px 0px var(--shadow-light);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--roblox-blue);
+        }
+
+        /* Admin Page Specific Styles */
+        .admin-page-content {
+            flex-grow: 1;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px var(--shadow-medium);
+            text-align: left;
+        }
+
+        .section-title {
+            color: var(--roblox-blue);
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: calc(100% - 24px); /* Adjust for padding */
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding in width */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--roblox-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.2);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-submit {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            background-color: var(--roblox-green);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        .btn-submit:hover {
+            background-color: #1a9e4e; /* Darker green */
+            transform: translateY(-2px);
+        }
+
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .message-box.success {
+            background-color: #D1FAE5; /* Light green */
+            color: #065F46; /* Dark green */
+            border: 1px solid #34D399;
+        }
+
+        .message-box.error {
+            background-color: #FEE2E2; /* Light red */
+            color: #991B1B; /* Dark red */
+            border: 1px solid #F87171;
+        }
+
+        .scammer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .scammer-table th,
+        .scammer-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .scammer-table th {
+            background-color: var(--roblox-blue);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+        }
+
+        .scammer-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .scammer-table tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-dark);
+            font-size: 0.9em;
+            margin-top: auto;
+            background-color: white;
+            box-shadow: 0 -2px 4px var(--shadow-light);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="logo.png" alt="AntiRobloxScam Logo">
+                <h1>Admin</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin_dashboard.html">Dashboard</a></li>
+                    <li><a href="/admin_users.html">Gebruikers</a></li>
+                    <li><a href="/admin_scammers.html">Scammers</a></li>
+                    <li><a href="/admin_settings.html">Instellingen</a></li>
+                    <li><a href="/auth/logout">Uitloggen</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="admin-page-content">
+            <h2 class="section-title">Scammer Toevoegen</h2>
+            <form id="add-scammer-form">
+                <div class="form-group">
+                    <label for="robloxUsername">Roblox Gebruikersnaam:</label>
+                    <input type="text" id="robloxUsername" name="robloxUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="scamType">Scam Type:</label>
+                    <select id="scamType" name="scamType" required>
+                        <option value="">Selecteer een type</option>
+                        <option value="Phishing">Phishing (Valse links)</option>
+                        <option value="Robux Scam">Robux Scam (Gratis Robux)</option>
+                        <option value="Account Theft">Account Diefstal</option>
+                        <option value="Fake Game">Nep Game</option>
+                        <option value="Other">Anders</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Beschrijving:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Scammer Toevoegen</button>
+            </form>
+            <div id="message-box" class="message-box"></div>
+
+            <h2 class="section-title" style="margin-top: 50px;">Huidige Scammer Lijst</h2>
+            <div class="scammer-list-container">
+                <table class="scammer-table" id="scammer-list-table">
+                    <thead>
+                        <tr>
+                            <th>Roblox Naam</th>
+                            <th>Scam Type</th>
+                            <th>Beschrijving</th>
+                            <th>Gerapporteerd Door</th>
+                            <th>Datum Toevoeging</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Scammer data will be loaded here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 AntiRobloxScam. Alle rechten voorbehouden.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addScammerForm = document.getElementById('add-scammer-form');
+            const messageBox = document.getElementById('message-box');
+            const scammerListTableBody = document.querySelector('#scammer-list-table tbody');
+
+            // Functie om de scammerlijst te laden
+            async function loadScammerList() {
+                try {
+                    const response = await fetch('/api/scammers');
+                    if (!response.ok) {
+                        if (response.status === 403) {
+                            messageBox.textContent = 'U heeft geen toegang om deze lijst te bekijken.';
+                            messageBox.classList.add('error', 'show');
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const scammers = await response.json();
+                    scammerListTableBody.innerHTML = ''; // Maak de tabel leeg
+
+                    scammers.forEach(scammer => {
+                        const row = document.createElement('tr');
+                        const reportDate = new Date(scammer.reportDate).toLocaleDateString('nl-NL', {
+                            year: 'numeric', month: 'numeric', day: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                        });
+                        row.innerHTML = `
+                            <td>${scammer.robloxUsername}</td>
+                            <td>${scammer.scamType}</td>
+                            <td>${scammer.description}</td>
+                            <td>${scammer.reportedBy}</td>
+                            <td>${reportDate}</td>
+                        `;
+                        scammerListTableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Fout bij het laden van de scammerlijst:', error);
+                    messageBox.textContent = 'Kon de scammerlijst niet laden. Probeer later opnieuw.';
+                    messageBox.classList.add('error', 'show');
+                }
+            }
+
+            // Formulier indien-handler
+            addScammerForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Voorkom standaard formulier indiening
+
+                const robloxUsername = document.getElementById('robloxUsername').value.trim();
+                const scamType = document.getElementById('scamType').value.trim();
+                const description = document.getElementById('description').value.trim();
+
+                // Toon laadbericht of leeg de status
+                messageBox.classList.remove('success', 'error', 'show');
+                messageBox.textContent = '';
+
+                try {
+                    const response = await fetch('/api/scammers', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ robloxUsername, scamType, description }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        messageBox.textContent = result.message;
+                        messageBox.classList.add('success', 'show');
+                        addScammerForm.reset(); // Reset het formulier na succes
+                        loadScammerList(); // Herlaad de lijst met scammers
+                    } else {
+                        messageBox.textContent = result.message || 'Fout bij het toevoegen van de scammer.';
+                        messageBox.classList.add('error', 'show');
+                    }
+                } catch (error) {
+                    console.error('Fout bij het versturen van de scammer data:', error);
+                    messageBox.textContent = 'Netwerkfout of server is onbereikbaar.';
+                    messageBox.classList.add('error', 'show');
+                }
+            });
+
+            // Laad de scammerlijst wanneer de pagina geladen is
+            loadScammerList();
+        });
+    </script>
+</body>
+</html> 

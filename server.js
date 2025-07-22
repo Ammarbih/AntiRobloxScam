@@ -286,9 +286,39 @@ function ensureAdmin(req, res, next) {
 
 // Nieuwe endpoint voor scammerlijst (nog steeds dummy, zal later worden vervangen)
 app.get('/api/scammers', (req, res) => {
-    const scammers = [
-    ];
-    res.json(scammers);
+    pool.query(`SELECT robloxUsername, scamType, description, reportedBy, reportDate FROM scammers ORDER BY reportDate DESC`, (err, queryResult) => {
+        if (err) {
+            console.error('Fout bij ophalen scammers:', err.stack);
+            return res.status(500).json({ message: 'Fout bij laden van scammers.' });
+        }
+        res.json(queryResult.rows);
+    });
+});
+
+// NIEUW: API endpoint om een scammer toe te voegen (alleen voor admins)
+app.post('/api/scammers', ensureAdmin, (req, res) => {
+    const { robloxUsername, scamType, description } = req.body;
+    const reportedBy = req.user.displayname; // Naam van de admin die het toevoegt
+
+    if (!robloxUsername || !scamType || !description) {
+        return res.status(400).json({ message: 'Alle velden (Roblox Naam, Scam Type, Beschrijving) zijn verplicht.' });
+    }
+
+    pool.query(
+        `INSERT INTO scammers (robloxUsername, scamType, description, reportedBy) VALUES ($1, $2, $3, $4) RETURNING *`,
+        [robloxUsername, scamType, description, reportedBy],
+        (err, result) => {
+            if (err) {
+                console.error('Fout bij toevoegen scammer:', err.stack);
+                // Controleer op unieke constrain schending (duplicate username)
+                if (err.code === '23505') { // PostgreSQL error code for unique_violation
+                    return res.status(409).json({ message: `Scammer met Roblox gebruikersnaam '${robloxUsername}' bestaat al.` });
+                }
+                return res.status(500).json({ message: 'Er is een fout opgetreden bij het toevoegen van de scammer.' });
+            }
+            res.status(201).json({ message: 'Scammer succesvol toegevoegd!', scammer: result.rows[0] });
+        }
+    );
 });
 
 // NIEUWE API-ENDPOINTS VOOR ADMIN DASHBOARD DATA
