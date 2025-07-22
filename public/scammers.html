@@ -493,6 +493,9 @@
 
         // Laad de scammerlijst wanneer de pagina geladen is
         loadScammerList();
+
+        // Voeg polling toe om de lijst elke 30 seconden te verversen
+        setInterval(loadScammerList, 30000); // 30000 milliseconden = 30 seconden
     </script>
 </body>
 </html> 
