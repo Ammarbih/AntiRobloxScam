@@ -381,8 +381,8 @@
                             <tr>
                                 <th>Roblox Naam</th>
                                 <th>Scam Type</th>
-                                <!-- <th>Datum Rapportage</th> -->
-                                <!-- <th>Status</th> -->
+                                <th>Datum Rapportage</th>
+                                <th>Gerapporteerd Door</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -476,18 +476,23 @@
 
                 scammers.forEach(scammer => {
                     const row = document.createElement('tr');
+                    const reportDate = new Date(scammer.reportDate).toLocaleDateString('nl-NL', {
+                        year: 'numeric', month: 'numeric', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+
                     row.innerHTML = `
-                        <td data-label="Roblox Naam">${scammer.robloxDisplayName}</td>
+                        <td data-label="Roblox Naam">${scammer.robloxUsername}</td>
                         <td data-label="Scam Type">${scammer.scamType}</td>
-                        <!-- <td data-label="Datum Rapportage">${scammer.reportDate}</td> -->
-                        <!-- <td data-label="Status"><span class="status-${scammer.status}">${scammer.status.toUpperCase()}</span></td> -->
+                        <td data-label="Datum Rapportage">${reportDate}</td>
+                        <td data-label="Gerapporteerd Door">${scammer.reportedBy}</td>
                     `;
                     tableBody.appendChild(row);
                 });
             } catch (error) {
                 console.error('Fout bij het laden van de scammerlijst:', error);
                 const tableBody = document.querySelector('#scammer-table tbody');
-                tableBody.innerHTML = '<tr><td colspan="2">Kon de scammerlijst niet laden.</td></tr>'; // Aangepast naar 2 kolommen
+                tableBody.innerHTML = '<tr><td colspan="4">Kon de scammerlijst niet laden.</td></tr>'; // Aangepast naar 4 kolommen
             }
         }
 
