@@ -381,8 +381,8 @@
                             <tr>
                                 <th>Roblox Naam</th>
                                 <th>Scam Type</th>
-                                <th>Datum Rapportage</th>
-                                <th>Gerapporteerd Door</th>
+                                <th>Beschrijving</th>
+                                <th>Datum Toevoeging</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -484,15 +484,15 @@
                     row.innerHTML = `
                         <td data-label="Roblox Naam">${scammer.robloxUsername}</td>
                         <td data-label="Scam Type">${scammer.scamType}</td>
+                        <td data-label="Beschrijving">${scammer.description}</td>
                         <td data-label="Datum Rapportage">${reportDate}</td>
-                        <td data-label="Gerapporteerd Door">${scammer.reportedBy}</td>
                     `;
                     tableBody.appendChild(row);
                 });
             } catch (error) {
                 console.error('Fout bij het laden van de scammerlijst:', error);
                 const tableBody = document.querySelector('#scammer-table tbody');
-                tableBody.innerHTML = '<tr><td colspan="4">Kon de scammerlijst niet laden.</td></tr>'; // Aangepast naar 4 kolommen
+                tableBody.innerHTML = '<tr><td colspan="3">Kon de scammerlijst niet laden.</td></tr>'; // Aangepast naar 3 kolommen
             }
         }
 
