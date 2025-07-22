@@ -72,7 +72,7 @@ app.use(express.static('pictures')); // Serveer ook de 'pictures' map
 
 // CORS Middleware
 app.use(cors({
-    origin: 'https://anti-roblox-scam-68023991678.europe-west1.run.app', // De server serveert nu zelf de frontend, dus de origin is ook de server zelf
+    origin: 'https://robloxscamdt.com', // De server serveert nu zelf de frontend, dus de origin is ook de server zelf
     credentials: true
 }));
 
