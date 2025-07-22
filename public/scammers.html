@@ -471,6 +471,7 @@
             try {
                 const response = await fetch('/api/scammers');
                 const scammers = await response.json();
+                console.log('Ontvangen scammers data:', scammers); // VOEG DEZE REGEL TOE
                 const tableBody = document.querySelector('#scammer-table tbody');
                 tableBody.innerHTML = '';
 
@@ -485,7 +486,7 @@
                         <td data-label="Roblox Naam">${scammer.robloxUsername}</td>
                         <td data-label="Scam Type">${scammer.scamType}</td>
                         <td data-label="Beschrijving">${scammer.description}</td>
-                        <td data-label="Datum Rapportage">${reportDate}</td>
+                        <td data-label="Datum Toevoeging">${reportDate}</td>
                     `;
                     tableBody.appendChild(row);
                 });
